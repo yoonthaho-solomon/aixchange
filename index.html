@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIXCHANGE — AI Technology Exchange</title>
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7C3AED">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AIXCHANGE">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<!-- SEO -->
+<meta name="description" content="프롬프트·에이전트·MCP·스킬. 진짜 AI 기술만 살아남는 마켓플레이스.">
+<meta property="og:title" content="AIXCHANGE — AI 기술 거래소">
+<meta property="og:description" content="프롬프트·에이전트·MCP·스킬. 진짜 AI 기술만 살아남는 마켓플레이스.">
+<meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -513,6 +527,16 @@ function App(){
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+
+// PWA 서비스워커 등록
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('SW registered'))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+
 </script>
 </body>
 </html>
