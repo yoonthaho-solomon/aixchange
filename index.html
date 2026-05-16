@@ -9,6 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://js.tosspayments.com/v2/standard"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
@@ -36,6 +37,19 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .fi{animation:fadeIn .5s cubic-bezier(.16,1,.3,1) both}
 .dot-live{animation:pulse 2s ease-in-out infinite}
+
+/* ── 모바일 반응형 ── */
+@media(max-width:768px){
+  .hero-grid{grid-template-columns:1fr!important;gap:32px!important}
+  .two-col{grid-template-columns:1fr!important;gap:16px!important}
+  .stats-grid{grid-template-columns:1fr 1fr!important}
+  .arena-vs{display:none!important}
+  .arena-cards{grid-template-columns:1fr 1fr!important;gap:10px!important}
+  .arena-section-grid{grid-template-columns:1fr!important;gap:32px!important}
+  .hide-mo{display:none!important}
+  .mp-grid{grid-template-columns:1fr 1fr!important}
+  .rev-grid{grid-template-columns:1fr auto auto!important}
+}
 </style>
 </head>
 <body>
@@ -60,6 +74,7 @@ const CARDS=[
 const SUPABASE_URL = 'https://xwknidzimmfrnditxoij.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RStIVVUmdYzxWjwMGANU0A_bMmUMJoT';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const TOSS_CLIENT_KEY = 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Emo';
 
 const CATS=['ALL','PROMPT','AGENT','SKILL','HARNESS','MACRO','MCP','SYSTEM'];
 const BATTLES=[
@@ -160,8 +175,71 @@ function App(){
     finally{setUpLoading(false);}
   };
 
-  // 도네이션 저장
-  const handleDonateSubmit=async()=>{
+  // 토스 결제 (다운로드)
+  const handlePay = async () => {
+    if (!pay) return;
+    try {
+      const toss = await TossPayments(TOSS_CLIENT_KEY);
+      const payment = toss.payment({ customerKey: user?.id || 'ANONYMOUS' });
+      await payment.requestPayment({
+        method: '카드',
+        amount: { currency: 'KRW', value: amt },
+        orderId: `dl_${pay.id}_${Date.now()}`,
+        orderName: pay.title,
+        successUrl: `${window.location.origin}?pay=success&assetId=${pay.id}&amount=${amt}`,
+        failUrl: `${window.location.origin}?pay=fail`,
+      });
+    } catch (e) {
+      if (e.code === 'USER_CANCEL') { setPay(null); return; }
+      showT(e.message || '결제 오류가 발생했습니다.', 'error');
+    }
+  };
+
+  // 토스 결제 (도네이션)
+  const handleTossDonate = async () => {
+    if (!don) return;
+    try {
+      const toss = await TossPayments(TOSS_CLIENT_KEY);
+      const payment = toss.payment({ customerKey: user?.id || 'ANONYMOUS' });
+      await payment.requestPayment({
+        method: '카드',
+        amount: { currency: 'KRW', value: amt },
+        orderId: `dn_${don.id}_${Date.now()}`,
+        orderName: `${don.title} 도네이션`,
+        successUrl: `${window.location.origin}?donate=success&assetId=${don.id}&amount=${amt}`,
+        failUrl: `${window.location.origin}?donate=fail`,
+      });
+    } catch (e) {
+      if (e.code === 'USER_CANCEL') { setDon(null); return; }
+      showT(e.message || '결제 오류가 발생했습니다.', 'error');
+    }
+  };
+
+  // 결제 성공 처리 (URL 파라미터)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('pay') === 'success') {
+      const assetId = params.get('assetId');
+      const amount = parseInt(params.get('amount') || '0');
+      showT(`✓ 결제 완료! 다운로드가 시작됩니다.`);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+    if (params.get('donate') === 'success') {
+      const assetId = params.get('assetId');
+      const amount = parseInt(params.get('amount') || '0');
+      // DB 저장
+      db.from('donations').insert({
+        asset_id: assetId, donor_alias: '익명',
+        amount_gross: amount, amount_net: net(amount), message: '',
+      });
+      showT(`💚 ₩${amount} 도네이션 완료! 제작자 수령 ₩${net(amount)}`);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+    if (params.get('pay') === 'fail' || params.get('donate') === 'fail') {
+      showT('결제가 취소됐습니다.', 'error');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
     if(!don)return;
     try{
       await db.from('donations').insert({
@@ -283,7 +361,7 @@ function App(){
             <button className="bp" onClick={()=>document.getElementById('market').scrollIntoView({behavior:'smooth'})} style={{padding:'11px 22px',fontSize:14}}>마켓 입장 →</button>
             <button className="bs" onClick={()=>setArena(true)} style={{padding:'11px 22px',fontSize:14}}>⚔ Arena 배틀</button>
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',borderTop:'1px solid var(--b)'}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',borderTop:'1px solid var(--b)'}} className="stats-grid">
             {[['총 다운로드','1.2M'],['실시간 도네','₩92M'],['활성 제작자','18,421'],['주간 Fork','42,812']].map(([l,v],i)=>(
               <div key={l} style={{padding:'18px 0',paddingLeft:i>0?18:0,borderLeft:i>0?'1px solid var(--b)':'none'}}>
                 <div className="lbl" style={{marginBottom:5}}>{l}</div>
@@ -394,7 +472,7 @@ function App(){
 
   {/* RANKING + LINEAGE */}
   <section style={{borderTop:'1px solid var(--b)',padding:'56px 0 72px'}}>
-    <div style={{...W,display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
+    <div style={{...W,display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}} className="two-col">
       <div className="card" style={{padding:26}}>
         <div style={{marginBottom:22,paddingBottom:18,borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
           <div><div className="lbl" style={{marginBottom:5}}>Weekly · Top Creator</div><h3 style={{fontSize:17,fontWeight:600,letterSpacing:'-.02em'}}>랭킹 TOP 5</h3></div>
@@ -428,17 +506,17 @@ function App(){
   <section style={{borderTop:'1px solid var(--b)',padding:'56px 0 72px',position:'relative',overflow:'hidden'}}>
     <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 50% 70% at 50% 50%,rgba(124,58,237,.07) 0%,transparent 65%)',pointerEvents:'none'}}/>
     <div style={{...W,position:'relative'}}>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:56,alignItems:'center'}}>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:56,alignItems:'center'}} className="arena-section-grid">
         <div>
           <div className="lbl" style={{marginBottom:10,color:'var(--pl)'}}>Weekly · Arena</div>
           <h3 style={{fontSize:'clamp(32px,4vw,52px)',fontWeight:700,letterSpacing:'-.04em',lineHeight:1.1,marginBottom:14}}>AI 기술을<br/>맞붙여라</h3>
           <p style={{fontSize:15,color:'var(--t2)',lineHeight:1.65,marginBottom:28}}>매주 두 기술이 맞붙습니다. 실사용자 투표로 승자가 결정되고 TOP10 랭킹에 가산점이 반영됩니다.</p>
           <button className="bp" onClick={()=>setArena(true)} style={{padding:'11px 22px',fontSize:14}}>배틀 참여하기 →</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:10,alignItems:'center'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:10,alignItems:'center'}} className="arena-cards">
           {[bt.left,bt.right].map((s,i)=>(
             <React.Fragment key={i}>
-              {i===1&&<div style={{textAlign:'center',fontSize:13,color:'var(--t3)',fontWeight:600}}>VS</div>}
+              {i===1&&<div style={{textAlign:'center',fontSize:13,color:'var(--t3)',fontWeight:600}} className="arena-vs">VS</div>}
               <div className="card" onClick={()=>setArena(true)} style={{padding:16,cursor:'pointer',borderColor:i===0?'rgba(124,58,237,.28)':'rgba(96,165,250,.28)'}}>
                 <div style={{fontSize:22,marginBottom:8}}>{s.icon}</div>
                 <div className="lbl" style={{marginBottom:3}}>{s.cat}</div>
@@ -550,7 +628,7 @@ function App(){
         <div className="lbl" style={{marginBottom:5}}>결제 금액</div>
         <div style={{fontSize:30,fontWeight:700,letterSpacing:'-.03em'}}>₩{amt.toLocaleString()}</div>
       </div>
-      <button className="bp" onClick={()=>{setPay(null);showT('✓ 다운로드 시작됩니다');}} style={{justifyContent:'center',padding:'12px 0',fontSize:14}}>₩{amt.toLocaleString()} 결제하기</button>
+      <button className="bp" onClick={handlePay} style={{justifyContent:'center',padding:'12px 0',fontSize:14}}>₩{amt.toLocaleString()} 결제하기</button>
     </div>
   </Overlay>}
 
@@ -566,7 +644,7 @@ function App(){
         <div style={{display:'flex',justifyContent:'space-between',color:'var(--r)',marginBottom:7,paddingBottom:7,borderBottom:'1px solid var(--b)'}}><span>플랫폼 수수료 10%</span><span>-₩{fee(amt)}</span></div>
         <div style={{display:'flex',justifyContent:'space-between',fontWeight:600}}><span>제작자 수령액</span><span style={{color:'#22C55E'}}>₩{net(amt).toLocaleString()}</span></div>
       </div>
-      <button className="bp" onClick={handleDonateSubmit} style={{justifyContent:'center',padding:'12px 0',fontSize:14,background:'#15803D'}}>₩{amt} 도네이션하기</button>
+      <button className="bp" onClick={handleTossDonate} style={{justifyContent:'center',padding:'12px 0',fontSize:14,background:'#15803D'}}>₩{amt} 도네이션하기</button>
     </div>
   </Overlay>}
 
@@ -614,10 +692,10 @@ function App(){
           <h2 style={{fontSize:26,fontWeight:700,letterSpacing:'-.03em',marginBottom:6}}>{voted?'결과를 확인하세요':'더 뛰어난 기술에 투표하세요'}</h2>
           <p style={{fontSize:13,color:'var(--t3)'}}>{tv.toLocaleString()}명 참여 중</p>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:12,alignItems:'stretch',marginBottom:14}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:12,alignItems:'stretch',marginBottom:14}} className="arena-cards">
           {[bt.left,bt.right].map((s,i)=>(
             <React.Fragment key={i}>
-              {i===1&&<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}><span style={{fontSize:14,fontWeight:700,color:'var(--t3)'}}>VS</span></div>}
+              {i===1&&<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}} className="arena-vs"><span style={{fontSize:14,fontWeight:700,color:'var(--t3)'}}>VS</span></div>}
               <div className="card" onClick={()=>{if(!voted){setVoted(i===0?'left':'right');setTimeout(()=>setRes(true),300);}}} style={{padding:22,cursor:voted?'default':'pointer',borderColor:voted===(i===0?'left':'right')?(i===0?'rgba(124,58,237,.5)':'rgba(96,165,250,.5)'):'var(--b)',background:voted===(i===0?'left':'right')?(i===0?'rgba(124,58,237,.06)':'rgba(96,165,250,.06)'):'var(--s)',opacity:voted&&voted!==(i===0?'left':'right')?.42:1,transition:'all .2s'}}>
                 <div style={{fontSize:30,marginBottom:12}}>{s.icon}</div>
                 <div className="lbl" style={{marginBottom:3,color:i===0?'var(--pl)':'#60A5FA'}}>{s.cat}</div>
@@ -668,7 +746,7 @@ function App(){
             <span style={{color:'var(--r)'}}>수수료 10% −₩3,180</span>
             <span style={{color:'#22C55E',fontWeight:600}}>실수령 ₩28,620</span>
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:0,marginBottom:24,borderTop:'1px solid var(--b)',borderBottom:'1px solid var(--b)'}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:0,marginBottom:24,borderTop:'1px solid var(--b)',borderBottom:'1px solid var(--b)'}} className="mp-grid">
             {[['실수령','₩28,620'],['이번주','₩164K'],['다운로드','12,842'],['랭킹','#14']].map(([l,v],i)=>(
               <div key={l} style={{padding:'15px 0',paddingLeft:i>0?14:0,borderLeft:i>0?'1px solid var(--b)':'none'}}>
                 <div className="lbl" style={{marginBottom:4}}>{l}</div>
