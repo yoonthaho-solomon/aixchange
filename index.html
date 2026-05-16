@@ -5,16 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIXCHANGE — AI Technology Exchange</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="https://js.tosspayments.com/v2/standard"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,sans-serif;background:#000;color:rgba(255,255,255,0.9);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-:root{--p:#7C3AED;--pl:#8B5CF6;--pd:rgba(124,58,237,0.15);--b:rgba(255,255,255,0.06);--bh:rgba(255,255,255,0.12);--ba:rgba(124,58,237,0.5);--s:rgba(255,255,255,0.03);--sh:rgba(255,255,255,0.05);--t1:rgba(255,255,255,0.95);--t2:rgba(255,255,255,0.55);--t3:rgba(255,255,255,0.28);--g:#22C55E;--r:#EF4444}
+:root{--p:#7C3AED;--pl:#8B5CF6;--b:rgba(255,255,255,0.06);--bh:rgba(255,255,255,0.12);--ba:rgba(124,58,237,0.5);--s:rgba(255,255,255,0.03);--sh:rgba(255,255,255,0.05);--t1:rgba(255,255,255,0.95);--t2:rgba(255,255,255,0.55);--t3:rgba(255,255,255,0.28);--r:#EF4444}
 .lbl{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
 .card{background:var(--s);border:1px solid var(--b);border-radius:12px;transition:border-color .2s,background .2s}
 .card:hover{border-color:var(--bh);background:var(--sh)}
@@ -23,10 +18,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--pl)}
 input::placeholder,textarea::placeholder{color:var(--t3)}
 select option{background:#111}
 button{font-family:'Inter',sans-serif;cursor:pointer}
-.bp{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:var(--p);color:#fff;font-size:13px;font-weight:500;border:none;border-radius:6px;cursor:pointer;transition:opacity .15s,transform .15s}
-.bp:hover{opacity:.88;transform:translateY(-1px)}
-.bs{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:transparent;color:var(--t1);font-size:13px;font-weight:500;border:1px solid var(--bh);border-radius:6px;cursor:pointer;transition:border-color .15s,background .15s}
-.bs:hover{border-color:var(--ba);background:var(--sh)}
+.bp{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:var(--p);color:#fff;font-size:13px;font-weight:500;border:none;border-radius:6px;cursor:pointer;transition:opacity .15s}
+.bp:hover{opacity:.88}
+.bs{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:transparent;color:var(--t1);font-size:13px;font-weight:500;border:1px solid var(--bh);border-radius:6px;cursor:pointer;transition:border-color .15s}
+.bs:hover{border-color:var(--ba)}
 .bg{background:none;border:none;color:var(--t2);font-size:13px;font-weight:500;cursor:pointer;transition:color .15s;font-family:'Inter'}
 .bg:hover{color:var(--t1)}
 ::-webkit-scrollbar{width:5px}
@@ -36,222 +31,65 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .fi{animation:fadeIn .5s cubic-bezier(.16,1,.3,1) both}
-.dot-live{animation:pulse 2s ease-in-out infinite}
-
-/* ── 모바일 반응형 ── */
+.dot{animation:pulse 2s ease-in-out infinite}
 @media(max-width:768px){
   .hero-grid{grid-template-columns:1fr!important;gap:32px!important}
   .two-col{grid-template-columns:1fr!important;gap:16px!important}
-  .stats-grid{grid-template-columns:1fr 1fr!important}
+  .stats-4{grid-template-columns:1fr 1fr!important}
   .arena-vs{display:none!important}
   .arena-cards{grid-template-columns:1fr 1fr!important;gap:10px!important}
-  .arena-section-grid{grid-template-columns:1fr!important;gap:32px!important}
+  .arena-2col{grid-template-columns:1fr!important;gap:32px!important}
+  .mp-4{grid-template-columns:1fr 1fr!important}
   .hide-mo{display:none!important}
-  .mp-grid{grid-template-columns:1fr 1fr!important}
-  .rev-grid{grid-template-columns:1fr auto auto!important}
 }
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
 const {useState,useEffect}=React;
 const W={maxWidth:1200,margin:'0 auto',padding:'0 24px'};
-const FEE=.1;
 const net=a=>Math.round(a*.9);
 const fee=a=>Math.round(a*.1);
 const fmt=n=>n>=1000?(n/1000).toFixed(1)+'K':String(n);
 
-const CARDS=[
-  {id:'1',icon:'✦',title:'Claude Enterprise Engine',short:'기업용 자동화 프롬프트 시스템',desc:'보고서·기획·법무 자동 생성. Fortune 500 기업에서 검증된 엔터프라이즈급 프롬프트 엔진.',cat:'PROMPT',price:100,donate:'₩100',dl:24200,forks:882,badge:'HOT',bc:'#EF4444',creator:'PromptLab',tier:'VERIFIED',earned:2420000,tags:['자동화','보고서','법무'],forkFrom:null,forkTo:['Legal Prompt System'],hist:[{u:'기업A',a:1000,m:'실무에 바로 씁니다',d:'05.13'},{u:'익명',a:300,m:'',d:'05.12'}],reviews:[{u:'dev_kim',s:5,t:'기획서 작성 시간 70% 단축됐습니다.'}]},
-  {id:'2',icon:'◆',title:'Taxi Dynamic Pricing AI',short:'실시간 탄력요금 최적화 엔진',desc:'실시간 교통·수요·날씨 기반 택시 요금 밀리초 최적화. 카카오모빌리티 API 연동 포함.',cat:'AGENT',price:300,donate:'₩300',dl:18400,forks:541,badge:'ARENA',bc:'#7C3AED',creator:'MobilityForge',tier:'TOP10',earned:5520000,tags:['모빌리티','가격최적화'],forkFrom:'PromptChain v1',forkTo:['Bus Forecaster'],hist:[{u:'모빌리티랩',a:1000,m:'카카오 연동 완성도가 높아요',d:'05.13'}],reviews:[{u:'taxi_op',s:5,t:'실제 운행 적용 중. 수익 개선 체감됩니다.'}]},
-  {id:'3',icon:'▲',title:'Skill.md Auto Builder',short:'Claude Skill 파일 자동 생성',desc:'업무 프로세스를 자연어로 입력하면 Skill.md를 자동 생성. Claude Projects에 즉시 적용 가능.',cat:'SKILL',price:100,donate:'₩100',dl:9100,forks:223,badge:'NEW',bc:'#22C55E',creator:'DevForge',tier:'RISING',earned:910000,tags:['Claude','Skill','자동화'],forkFrom:null,forkTo:[],hist:[{u:'익명',a:100,m:'내부 도구로 쓰고 있어요',d:'05.13'}],reviews:[{u:'pm_lee',s:4,t:'기획자도 쉽게 쓸 수 있는 수준.'}]},
-  {id:'4',icon:'●',title:'MCP Enterprise Suite',short:'엔터프라이즈 MCP 통합 솔루션',desc:'Slack, Notion, Jira, GitHub을 단일 MCP 서버로 통합. SSO·감사로그·권한관리 포함.',cat:'MCP',price:1000,donate:'₩1,000',dl:7300,forks:391,badge:'HOT',bc:'#EF4444',creator:'ChainWorks',tier:'VERIFIED',earned:7300000,tags:['MCP','Slack','엔터프라이즈'],forkFrom:null,forkTo:['Gov MCP Adapter'],hist:[{u:'기업B',a:1000,m:'온프레미스 지원이 결정적',d:'05.13'}],reviews:[{u:'cto_park',s:5,t:'보안 요건 충족하면서 이 가격이면 말이 안 됩니다.'}]},
-  {id:'5',icon:'◉',title:'AutoAgent Framework',short:'멀티 에이전트 오케스트레이션',desc:'복수의 Claude 에이전트 병렬 실행 + 결과 통합. 실패 복구·비용 최적화 자동 처리.',cat:'AGENT',price:300,donate:'₩300',dl:5800,forks:174,badge:'NEW',bc:'#22C55E',creator:'AgentLab',tier:'RISING',earned:1740000,tags:['멀티에이전트'],forkFrom:null,forkTo:[],hist:[{u:'익명',a:300,m:'병렬 처리 속도 대박입니다',d:'05.13'}],reviews:[{u:'ml_eng',s:5,t:'복잡한 파이프라인을 이걸로 다 짰습니다.'}]},
-  {id:'6',icon:'◐',title:'Legal Prompt System',short:'계약서·법무 문서 자동 생성',desc:'한국 법률 맞춤 계약서, NDA, 이용약관 자동 생성. 법무법인 검수 템플릿 기반.',cat:'PROMPT',price:100,donate:'₩100',dl:4100,forks:88,badge:'',bc:'',creator:'LegalAI',tier:'VERIFIED',earned:410000,tags:['법무','계약서'],forkFrom:'Claude Enterprise Engine',forkTo:[],hist:[{u:'스타트업D',a:300,m:'법무팀 없이도 초안 뽑습니다',d:'05.13'}],reviews:[{u:'founder_oh',s:5,t:'초기 스타트업에 필수 도구입니다.'}]},
-];
+const SUPABASE_URL='https://xwknidzimmfrnditxoij.supabase.co';
+const SUPABASE_KEY='sb_publishable_RStIVVUmdYzxWjwMGANU0A_bMmUMJoT';
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const SUPABASE_URL = 'https://xwknidzimmfrnditxoij.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_RStIVVUmdYzxWjwMGANU0A_bMmUMJoT';
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const TOSS_CLIENT_KEY = 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Emo';
+const MOCK=[
+  {id:'1',icon:'✦',title:'Claude Enterprise Engine',short:'기업용 자동화 프롬프트 시스템',cat:'PROMPT',price:100,donate:'₩100',dl:24200,forks:882,badge:'HOT',bc:'#EF4444',creator:'PromptLab',earned:2420000,tags:['자동화','법무']},
+  {id:'2',icon:'◆',title:'Taxi Dynamic Pricing AI',short:'실시간 탄력요금 최적화 엔진',cat:'AGENT',price:300,donate:'₩300',dl:18400,forks:541,badge:'ARENA',bc:'#7C3AED',creator:'MobilityForge',earned:5520000,tags:['모빌리티']},
+  {id:'3',icon:'▲',title:'Skill.md Auto Builder',short:'Claude Skill 파일 자동 생성',cat:'SKILL',price:100,donate:'₩100',dl:9100,forks:223,badge:'NEW',bc:'#22C55E',creator:'DevForge',earned:910000,tags:['Claude','자동화']},
+  {id:'4',icon:'●',title:'MCP Enterprise Suite',short:'엔터프라이즈 MCP 통합 솔루션',cat:'MCP',price:1000,donate:'₩1,000',dl:7300,forks:391,badge:'HOT',bc:'#EF4444',creator:'ChainWorks',earned:7300000,tags:['MCP']},
+  {id:'5',icon:'◉',title:'AutoAgent Framework',short:'멀티 에이전트 오케스트레이션',cat:'AGENT',price:300,donate:'₩300',dl:5800,forks:174,badge:'NEW',bc:'#22C55E',creator:'AgentLab',earned:1740000,tags:['에이전트']},
+  {id:'6',icon:'◐',title:'Legal Prompt System',short:'계약서·법무 문서 자동 생성',cat:'PROMPT',price:100,donate:'₩100',dl:4100,forks:88,badge:'',bc:'',creator:'LegalAI',earned:410000,tags:['법무']},
+];
 
 const CATS=['ALL','PROMPT','AGENT','SKILL','HARNESS','MACRO','MCP','SYSTEM'];
 const BATTLES=[
-  {id:'b1',label:'이번주 배틀',lv:1423,rv:1891,left:{id:'1',icon:'✦',title:'Claude Enterprise Engine',cat:'PROMPT',creator:'PromptLab',desc:'기업 보고서·법무 자동화'},right:{id:'2',icon:'◆',title:'Taxi Dynamic Pricing',cat:'AGENT',creator:'MobilityForge',desc:'실시간 탄력요금 최적화'}},
-  {id:'b2',label:'MCP 결전',lv:874,rv:612,left:{id:'4',icon:'●',title:'MCP Enterprise Suite',cat:'MCP',creator:'ChainWorks',desc:'Slack·Notion·Jira 통합'},right:{id:'5',icon:'◉',title:'AutoAgent Framework',cat:'AGENT',creator:'AgentLab',desc:'멀티 에이전트 오케스트레이션'}},
-  {id:'b3',label:'신인왕 배틀',lv:543,rv:489,left:{id:'3',icon:'▲',title:'Skill.md Builder',cat:'SKILL',creator:'DevForge',desc:'Claude Skill 자동 생성'},right:{id:'6',icon:'◐',title:'Legal Prompt System',cat:'PROMPT',creator:'LegalAI',desc:'한국법 계약서 자동 생성'}},
+  {id:'b1',label:'이번주 배틀',lv:1423,rv:1891,left:{icon:'✦',title:'Claude Enterprise Engine',cat:'PROMPT',desc:'기업 보고서·법무 자동화'},right:{icon:'◆',title:'Taxi Dynamic Pricing',cat:'AGENT',desc:'실시간 탄력요금 최적화'}},
+  {id:'b2',label:'MCP 결전',lv:874,rv:612,left:{icon:'●',title:'MCP Enterprise Suite',cat:'MCP',desc:'Slack·Notion·Jira 통합'},right:{icon:'◉',title:'AutoAgent Framework',cat:'AGENT',desc:'멀티 에이전트 오케스트레이션'}},
 ];
 
 function Toast({t}){
   if(!t)return null;
-  return <div style={{position:'fixed',bottom:24,left:'50%',transform:'translateX(-50%)',zIndex:9999,padding:'11px 20px',background:t.type==='error'?'rgba(239,68,68,.1)':'rgba(124,58,237,.1)',border:`1px solid ${t.type==='error'?'rgba(239,68,68,.3)':'rgba(124,58,237,.3)'}`,borderRadius:8,color:t.type==='error'?'#FCA5A5':'#C4B5FD',fontSize:13,fontWeight:500,backdropFilter:'blur(12px)',animation:'fadeIn .2s',whiteSpace:'nowrap'}}>{t.msg}</div>;
-}
-
-function Overlay({onClose,children,w=480}){
-  return <div onClick={onClose} style={{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.82)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',padding:16,overflowY:'auto'}}>
-    <div onClick={e=>e.stopPropagation()} className="card" style={{width:'100%',maxWidth:w,background:'#0c0c0c',borderColor:'rgba(255,255,255,.1)',animation:'fadeIn .2s',maxHeight:'90vh',overflow:'auto'}}>{children}</div>
-  </div>;
-}
-
-function MH({label,title,onClose}){
-  return <div style={{padding:'22px 24px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-    <div><div className="lbl" style={{marginBottom:4}}>{label}</div><div style={{fontSize:15,fontWeight:600}}>{title}</div></div>
-    <button className="bg" onClick={onClose} style={{fontSize:22,lineHeight:1}}>×</button>
-  </div>;
+  return React.createElement('div',{style:{position:'fixed',bottom:24,left:'50%',transform:'translateX(-50%)',zIndex:9999,padding:'11px 20px',background:t.type==='error'?'rgba(239,68,68,.1)':'rgba(124,58,237,.1)',border:'1px solid '+(t.type==='error'?'rgba(239,68,68,.3)':'rgba(124,58,237,.3)'),borderRadius:8,color:t.type==='error'?'#FCA5A5':'#C4B5FD',fontSize:13,fontWeight:500,backdropFilter:'blur(12px)',whiteSpace:'nowrap'}},t.msg);
 }
 
 function App(){
   const [cat,setCat]=useState('ALL');
   const [q,setQ]=useState('');
-  const [tag,setTag]=useState('');
-  const [cards,setCards]=useState([]);
+  const [cards,setCards]=useState(MOCK);
   const [loading,setLoading]=useState(true);
-  const [detail,setDetail]=useState(null);
   const [pay,setPay]=useState(null);
   const [don,setDon]=useState(null);
   const [amt,setAmt]=useState(100);
   const [auth,setAuth]=useState(false);
   const [aMode,setAMode]=useState('login');
-  const [user,setUser]=useState(null);
-  const [authLoading,setAuthLoading]=useState(false);
-  const [upLoading,setUpLoading]=useState(false);
-  const [upData,setUpData]=useState({title:'',cat:'PROMPT',price:100,desc:''});
-
-  // 세션 확인
-  useEffect(()=>{
-    db.auth.getSession().then(({data:{session}})=>setUser(session?.user??null));
-    db.auth.onAuthStateChange((_,session)=>setUser(session?.user??null));
-  },[]);
-
-  // 로그인/회원가입
-  const handleAuth=async()=>{
-    if(!authLoading){
-      setAuthLoading(true);
-      try{
-        const email=document.getElementById('auth-email')?.value;
-        const pw=document.getElementById('auth-pw')?.value;
-        if(!email||!pw){showT('이메일과 비밀번호를 입력해주세요.','error');return;}
-        if(aMode==='login'){
-          const{error}=await db.auth.signInWithPassword({email,password:pw});
-          if(error)throw error;
-          showT('✓ 로그인 완료!');
-        }else{
-          const{error}=await db.auth.signUp({email,password:pw});
-          if(error)throw error;
-          showT('✓ 회원가입 완료! 이메일을 확인해주세요.');
-        }
-        setAuth(false);
-      }catch(e){showT(e.message,'error');}
-      finally{setAuthLoading(false);}
-    }
-  };
-
-  // 로그아웃
-  const handleLogout=async()=>{
-    await db.auth.signOut();
-    showT('로그아웃됐습니다.');
-  };
-
-  // 업로드
-  const handleUpload=async()=>{
-    if(!user){showT('로그인이 필요합니다.','error');setUp(false);setAuth(true);return;}
-    if(!upData.title||!upData.desc){showT('제목과 설명을 입력해주세요.','error');return;}
-    setUpLoading(true);
-    try{
-      const{error}=await db.from('assets').insert({
-        title:upData.title, description:upData.desc,
-        category:upData.cat, price:upData.price,
-        icon:'✦', status:'ACTIVE',
-      });
-      if(error)throw error;
-      showT('🎉 업로드 완료!');
-      setUp(false);
-      setUpData({title:'',cat:'PROMPT',price:100,desc:''});
-      // 목록 새로고침
-      const{data}=await db.from('assets').select('*').eq('status','ACTIVE').order('download_count',{ascending:false});
-      if(data)setCards(data.map(a=>({id:a.id,icon:a.icon||'✦',title:a.title,short:a.description,desc:a.description,cat:a.category,price:a.price,donate:`₩${a.price}`,dl:a.download_count,forks:a.fork_count,badge:a.badge||'',bc:a.badge==='HOT'?'#EF4444':a.badge==='ARENA'?'#7C3AED':a.badge==='NEW'?'#22C55E':'',creator:'Creator',tier:'VERIFIED',earned:a.donate_net,tags:a.tags||[],forkFrom:null,forkTo:[],hist:[],reviews:[]})));
-    }catch(e){showT(e.message,'error');}
-    finally{setUpLoading(false);}
-  };
-
-  // 토스 결제 (다운로드)
-  const handlePay = async () => {
-    if (!pay) return;
-    try {
-      const toss = await TossPayments(TOSS_CLIENT_KEY);
-      const payment = toss.payment({ customerKey: user?.id || 'ANONYMOUS' });
-      await payment.requestPayment({
-        method: '카드',
-        amount: { currency: 'KRW', value: amt },
-        orderId: `dl_${pay.id}_${Date.now()}`,
-        orderName: pay.title,
-        successUrl: `${window.location.origin}?pay=success&assetId=${pay.id}&amount=${amt}`,
-        failUrl: `${window.location.origin}?pay=fail`,
-      });
-    } catch (e) {
-      if (e.code === 'USER_CANCEL') { setPay(null); return; }
-      showT(e.message || '결제 오류가 발생했습니다.', 'error');
-    }
-  };
-
-  // 토스 결제 (도네이션)
-  const handleTossDonate = async () => {
-    if (!don) return;
-    try {
-      const toss = await TossPayments(TOSS_CLIENT_KEY);
-      const payment = toss.payment({ customerKey: user?.id || 'ANONYMOUS' });
-      await payment.requestPayment({
-        method: '카드',
-        amount: { currency: 'KRW', value: amt },
-        orderId: `dn_${don.id}_${Date.now()}`,
-        orderName: `${don.title} 도네이션`,
-        successUrl: `${window.location.origin}?donate=success&assetId=${don.id}&amount=${amt}`,
-        failUrl: `${window.location.origin}?donate=fail`,
-      });
-    } catch (e) {
-      if (e.code === 'USER_CANCEL') { setDon(null); return; }
-      showT(e.message || '결제 오류가 발생했습니다.', 'error');
-    }
-  };
-
-  // 결제 성공 처리 (URL 파라미터)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('pay') === 'success') {
-      const assetId = params.get('assetId');
-      const amount = parseInt(params.get('amount') || '0');
-      showT(`✓ 결제 완료! 다운로드가 시작됩니다.`);
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-    if (params.get('donate') === 'success') {
-      const assetId = params.get('assetId');
-      const amount = parseInt(params.get('amount') || '0');
-      // DB 저장
-      db.from('donations').insert({
-        asset_id: assetId, donor_alias: '익명',
-        amount_gross: amount, amount_net: net(amount), message: '',
-      });
-      showT(`💚 ₩${amount} 도네이션 완료! 제작자 수령 ₩${net(amount)}`);
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-    if (params.get('pay') === 'fail' || params.get('donate') === 'fail') {
-      showT('결제가 취소됐습니다.', 'error');
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, []);
-    if(!don)return;
-    try{
-      await db.from('donations').insert({
-        asset_id:don.id, donor_alias:'익명',
-        amount_gross:amt, amount_net:net(amt), message:'',
-      });
-      // donate_net 업데이트
-      await db.from('assets').update({donate_net:don.earned+net(amt)}).eq('id',don.id);
-    }catch(e){console.error(e);}
-    showT(`💚 ₩${amt} 도네이션 완료! 제작자 수령 ₩${net(amt)}`);
-    setDon(null);
-  };
   const [up,setUp]=useState(false);
   const [arena,setArena]=useState(false);
   const [aIdx,setAIdx]=useState(0);
@@ -262,45 +100,25 @@ function App(){
   const [log,setLog]=useState([
     {type:'DOWNLOAD',text:'Taxi Surge AI 다운로드',val:'+₩300'},
     {type:'DONATE',text:'Claude KR Pack 도네이션',val:'+₩1,000'},
-    {type:'FORK',text:'PromptChain v4 포크 생성',val:''},
+    {type:'FORK',text:'PromptChain v4 포크',val:''},
     {type:'ARENA',text:'주간 배틀 투표 진행중',val:''},
     {type:'SETTLE',text:'주간 정산 완료',val:'+₩12,482,000'},
   ]);
 
   const showT=(msg,type='success')=>{setToast({msg,type});setTimeout(()=>setToast(null),2500)};
 
-  // DB 에셋 불러오기
   useEffect(()=>{
-    async function fetchAssets(){
-      setLoading(true);
-      try {
-        const {data,error}=await db.from('assets').select('*').eq('status','ACTIVE').order('download_count',{ascending:false});
+    db.from('assets').select('*').eq('status','ACTIVE').order('download_count',{ascending:false})
+      .then(({data,error})=>{
         if(!error&&data&&data.length>0){
-          setCards(data.map(a=>({
-            id:a.id, icon:a.icon||'✦', title:a.title,
-            short:a.description, desc:a.description,
-            cat:a.category, price:a.price,
-            donate:`₩${a.price}`, dl:a.download_count,
-            forks:a.fork_count, badge:a.badge||'',
-            bc:a.badge==='HOT'?'#EF4444':a.badge==='ARENA'?'#7C3AED':a.badge==='NEW'?'#22C55E':'',
-            creator:'Creator', tier:'VERIFIED',
-            earned:a.donate_net, tags:a.tags||[],
-            forkFrom:null, forkTo:[], hist:[], reviews:[],
-          })));
+          setCards(data.map(a=>({id:a.id,icon:a.icon||'✦',title:a.title,short:a.description,cat:a.category,price:a.price,donate:'₩'+a.price,dl:a.download_count,forks:a.fork_count,badge:a.badge||'',bc:a.badge==='HOT'?'#EF4444':a.badge==='ARENA'?'#7C3AED':a.badge==='NEW'?'#22C55E':'',creator:'Creator',earned:a.donate_net,tags:a.tags||[]})));
         }
-      } catch(e){ console.error(e); }
-      setLoading(false);
-    }
-    fetchAssets();
+        setLoading(false);
+      }).catch(()=>setLoading(false));
   },[]);
 
   useEffect(()=>{
-    const L=[
-      {type:'DOWNLOAD',text:'Claude Enterprise Engine 다운로드',val:'+₩100'},
-      {type:'DONATE',text:'Taxi Pricing AI 도네이션',val:'+₩1,000'},
-      {type:'FORK',text:'AutoAgent Framework 포크',val:''},
-      {type:'UPLOAD',text:'새 에셋 업로드됨',val:''},
-    ];
+    const L=[{type:'DOWNLOAD',text:'Claude Enterprise 다운로드',val:'+₩100'},{type:'DONATE',text:'MCP Suite 도네이션',val:'+₩1,000'},{type:'FORK',text:'AutoAgent 포크',val:''},{type:'UPLOAD',text:'새 에셋 업로드',val:''}];
     const t=setInterval(()=>setLog(p=>[L[Math.floor(Math.random()*L.length)],...p.slice(0,4)]),4000);
     return()=>clearInterval(t);
   },[]);
@@ -313,470 +131,388 @@ function App(){
   const ranked=[...cards].map(c=>({...c,ne:net(c.earned),score:net(c.earned)*.5+c.dl*.3+c.forks*.2})).sort((a,b)=>b.score-a.score);
   const filtered=cards.filter(c=>{
     if(cat!=='ALL'&&c.cat!==cat)return false;
-    if(q){const ql=q.toLowerCase();if(!c.title.toLowerCase().includes(ql)&&!c.desc.toLowerCase().includes(ql)&&!c.tags.some(t=>t.toLowerCase().includes(ql)))return false}
-    if(tag&&!c.tags.includes(tag))return false;
+    if(q){const ql=q.toLowerCase();if(!c.title.toLowerCase().includes(ql)&&!c.short.toLowerCase().includes(ql))return false}
     return true;
   });
 
   const lc=t=>({DOWNLOAD:'#8B5CF6',DONATE:'#22C55E',FORK:'#60A5FA',UPLOAD:'#F59E0B',ARENA:'#EC4899',SETTLE:'#22C55E'}[t]||'#555');
 
-  return <>
-  <Toast t={toast}/>
+  const h=React.createElement;
 
-  {/* NAV */}
-  <header style={{position:'sticky',top:0,zIndex:100,borderBottom:'1px solid var(--b)',background:'rgba(0,0,0,.88)',backdropFilter:'blur(16px)'}}>
-    <div style={{...W,display:'flex',alignItems:'center',justifyContent:'space-between',height:52}}>
-      <div style={{display:'flex',alignItems:'center',gap:12}}>
-        <span style={{fontSize:15,fontWeight:700,letterSpacing:'-.02em',color:'#fff',whiteSpace:'nowrap'}}>AIXCHANGE</span>
-      </div>
-      <div style={{display:'flex',alignItems:'center',gap:6}}>
-        <button className="bg" onClick={()=>setMp(true)} style={{fontSize:12,whiteSpace:'nowrap'}}>마이페이지</button>
-        {user
-          ? <button className="bg" onClick={handleLogout} style={{fontSize:12,whiteSpace:'nowrap',color:'var(--t3)'}}>로그아웃</button>
-          : <button className="bg" onClick={()=>setAuth(true)} style={{fontSize:12,whiteSpace:'nowrap'}}>로그인</button>
-        }
-        <button className="bp" onClick={()=>setUp(true)} style={{padding:'7px 14px',fontSize:12,whiteSpace:'nowrap'}}>업로드</button>
-      </div>
-    </div>
-  </header>
+  return h(React.Fragment,null,
+    h(Toast,{t:toast}),
 
-  {/* HERO */}
-  <section style={{position:'relative',overflow:'hidden',padding:'90px 0 72px'}}>
-    <div style={{position:'absolute',top:'-15%',left:'50%',transform:'translateX(-50%)',width:700,height:350,background:'radial-gradient(ellipse,rgba(124,58,237,.14) 0%,transparent 70%)',pointerEvents:'none'}}/>
-    <div style={{...W,position:'relative'}}>
-      <div style={{display:'grid',gridTemplateColumns:'minmax(0,1.2fr) minmax(0,400px)',gap:'48px 72px',alignItems:'center',flexWrap:'wrap'}}
-        className="hero-grid">
-        <style>{`@media(max-width:768px){.hero-grid{grid-template-columns:1fr!important;gap:40px!important}}`}</style>
-        <div className="fi">
-          <div style={{display:'inline-flex',alignItems:'center',gap:8,padding:'5px 12px',background:'rgba(124,58,237,.1)',border:'1px solid rgba(124,58,237,.2)',borderRadius:20,marginBottom:28}}>
-            <span style={{width:6,height:6,borderRadius:'50%',background:'#22C55E'}} className="dot-live"/>
-            <span style={{fontSize:12,color:'#C4B5FD',fontWeight:500}}>실시간 · LIVE</span>
-          </div>
-          <h1 style={{fontSize:'clamp(44px,6vw,76px)',fontWeight:700,lineHeight:1.06,letterSpacing:'-.04em',marginBottom:18,color:'#fff'}}>
-            AI 기술을<br/>
-            <span style={{background:'linear-gradient(135deg,#7C3AED,#A78BFA,#7C3AED)',backgroundSize:'200% 200%',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',animation:'gradShift 4s ease infinite'}}>거래하세요</span>
-          </h1>
-          <p style={{fontSize:16,lineHeight:1.65,color:'var(--t2)',maxWidth:500,marginBottom:36}}>프롬프트부터 에이전트, MCP, 스킬까지. 실사용 평가와 도네이션으로 진짜 AI 기술만 살아남는 마켓플레이스.</p>
-          <div style={{display:'flex',gap:10,marginBottom:56,flexWrap:'wrap'}}>
-            <button className="bp" onClick={()=>document.getElementById('market').scrollIntoView({behavior:'smooth'})} style={{padding:'11px 22px',fontSize:14}}>마켓 입장 →</button>
-            <button className="bs" onClick={()=>setArena(true)} style={{padding:'11px 22px',fontSize:14}}>⚔ Arena 배틀</button>
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',borderTop:'1px solid var(--b)'}} className="stats-grid">
-            {[['총 다운로드','1.2M'],['실시간 도네','₩92M'],['활성 제작자','18,421'],['주간 Fork','42,812']].map(([l,v],i)=>(
-              <div key={l} style={{padding:'18px 0',paddingLeft:i>0?18:0,borderLeft:i>0?'1px solid var(--b)':'none'}}>
-                <div className="lbl" style={{marginBottom:5}}>{l}</div>
-                <div style={{fontSize:20,fontWeight:700,letterSpacing:'-.03em',color:'#fff'}}>{v}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+    // NAV
+    h('header',{style:{position:'sticky',top:0,zIndex:100,borderBottom:'1px solid var(--b)',background:'rgba(0,0,0,.88)',backdropFilter:'blur(16px)'}},
+      h('div',{style:{...W,display:'flex',alignItems:'center',justifyContent:'space-between',height:52}},
+        h('span',{style:{fontSize:15,fontWeight:700,letterSpacing:'-.02em',color:'#fff'}},'AIXCHANGE'),
+        h('div',{style:{display:'flex',alignItems:'center',gap:6}},
+          h('button',{className:'bg',onClick:()=>setMp(true),style:{fontSize:12}},'마이페이지'),
+          h('button',{className:'bg',onClick:()=>setAuth(true),style:{fontSize:12}},'로그인'),
+          h('button',{className:'bp',onClick:()=>setUp(true),style:{padding:'7px 14px',fontSize:12}},'업로드')
+        )
+      )
+    ),
 
-        {/* LIVE FEED */}
-        <div className="fi card" style={{overflow:'hidden',animationDelay:'.12s'}}>
-          <div style={{padding:'16px 20px',borderBottom:'1px solid var(--b)',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-            <div><div className="lbl" style={{marginBottom:3}}>Live Activity</div><div style={{fontSize:14,fontWeight:600}}>실시간 기술 시장</div></div>
-            <div style={{display:'flex',alignItems:'center',gap:6}}><span style={{width:6,height:6,borderRadius:'50%',background:'#22C55E'}} className="dot-live"/><span style={{fontSize:11,color:'var(--t3)',fontWeight:500}}>LIVE</span></div>
-          </div>
-          <div style={{padding:'8px 0'}}>
-            {log.map((l,i)=>(
-              <div key={i} style={{display:'flex',alignItems:'center',gap:12,padding:'9px 20px',opacity:1-i*.17,borderBottom:i<log.length-1?'1px solid var(--b)':'none'}}>
-                <span style={{fontSize:10,fontWeight:600,letterSpacing:'.06em',color:lc(l.type),minWidth:60}}>{l.type}</span>
-                <span style={{fontSize:13,color:'var(--t2)',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.text}</span>
-                {l.val&&<span style={{fontSize:12,fontWeight:600,color:'#22C55E',whiteSpace:'nowrap'}}>{l.val}</span>}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    // HERO
+    h('section',{style:{position:'relative',overflow:'hidden',padding:'80px 0 64px'}},
+      h('div',{style:{position:'absolute',top:'-15%',left:'50%',transform:'translateX(-50%)',width:700,height:350,background:'radial-gradient(ellipse,rgba(124,58,237,.14) 0%,transparent 70%)',pointerEvents:'none'}}),
+      h('div',{style:{...W,position:'relative'}},
+        h('div',{style:{display:'grid',gridTemplateColumns:'1.2fr 380px',gap:'48px 64px',alignItems:'center'},className:'hero-grid'},
+          h('div',{className:'fi'},
+            h('div',{style:{display:'inline-flex',alignItems:'center',gap:8,padding:'5px 12px',background:'rgba(124,58,237,.1)',border:'1px solid rgba(124,58,237,.2)',borderRadius:20,marginBottom:24}},
+              h('span',{style:{width:6,height:6,borderRadius:'50%',background:'#22C55E'},className:'dot'}),
+              h('span',{style:{fontSize:12,color:'#C4B5FD',fontWeight:500}},'실시간 · LIVE')
+            ),
+            h('h1',{style:{fontSize:'clamp(40px,6vw,72px)',fontWeight:700,lineHeight:1.06,letterSpacing:'-.04em',marginBottom:16,color:'#fff'}},
+              'AI 기술을',h('br'),
+              h('span',{style:{background:'linear-gradient(135deg,#7C3AED,#A78BFA,#7C3AED)',backgroundSize:'200% 200%',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',animation:'gradShift 4s ease infinite'}},'거래하세요')
+            ),
+            h('p',{style:{fontSize:15,lineHeight:1.65,color:'var(--t2)',marginBottom:32}},'프롬프트부터 에이전트, MCP, 스킬까지. 실사용 평가와 도네이션으로 진짜 AI 기술만 살아남는 마켓플레이스.'),
+            h('div',{style:{display:'flex',gap:10,marginBottom:48,flexWrap:'wrap'}},
+              h('button',{className:'bp',onClick:()=>document.getElementById('market').scrollIntoView({behavior:'smooth'}),style:{padding:'11px 22px',fontSize:14}},'마켓 입장 →'),
+              h('button',{className:'bs',onClick:()=>setArena(true),style:{padding:'11px 22px',fontSize:14}},'⚔ Arena 배틀')
+            ),
+            h('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',borderTop:'1px solid var(--b)'},className:'stats-4'},
+              ...[['총 다운로드','1.2M'],['실시간 도네','₩92M'],['활성 제작자','18,421'],['주간 Fork','42,812']].map(([l,v],i)=>
+                h('div',{key:l,style:{padding:'16px 0',paddingLeft:i>0?16:0,borderLeft:i>0?'1px solid var(--b)':'none'}},
+                  h('div',{className:'lbl',style:{marginBottom:4}},l),
+                  h('div',{style:{fontSize:18,fontWeight:700,color:'#fff'}},v)
+                )
+              )
+            )
+          ),
+          // Live Feed
+          h('div',{className:'card fi',style:{overflow:'hidden',animationDelay:'.12s'}},
+            h('div',{style:{padding:'14px 18px',borderBottom:'1px solid var(--b)',display:'flex',alignItems:'center',justifyContent:'space-between'}},
+              h('div',null,h('div',{className:'lbl',style:{marginBottom:3}},'Live Activity'),h('div',{style:{fontSize:14,fontWeight:600}},'실시간 기술 시장')),
+              h('div',{style:{display:'flex',alignItems:'center',gap:6}},h('span',{style:{width:6,height:6,borderRadius:'50%',background:'#22C55E'},className:'dot'}),h('span',{style:{fontSize:11,color:'var(--t3)',fontWeight:500}},'LIVE'))
+            ),
+            h('div',{style:{padding:'6px 0'}},
+              ...log.map((l,i)=>h('div',{key:i,style:{display:'flex',alignItems:'center',gap:10,padding:'8px 18px',opacity:1-i*.17,borderBottom:i<log.length-1?'1px solid var(--b)':'none'}},
+                h('span',{style:{fontSize:10,fontWeight:600,letterSpacing:'.06em',color:lc(l.type),minWidth:56}},l.type),
+                h('span',{style:{fontSize:12,color:'var(--t2)',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}},l.text),
+                l.val&&h('span',{style:{fontSize:11,fontWeight:600,color:'#22C55E',whiteSpace:'nowrap'}},l.val)
+              ))
+            )
+          )
+        )
+      )
+    ),
 
-  {/* CAT TABS */}
-  <section style={{borderTop:'1px solid var(--b)',borderBottom:'1px solid var(--b)'}}>
-    <div style={W}>
-      <div style={{display:'flex',gap:0,overflowX:'auto'}}>
-        {CATS.map(c=><button key={c} onClick={()=>setCat(c)} style={{padding:'11px 16px',background:'none',border:'none',fontSize:13,fontWeight:500,color:cat===c?'#fff':'var(--t3)',borderBottom:`2px solid ${cat===c?'var(--p)':'transparent'}`,cursor:'pointer',whiteSpace:'nowrap',transition:'color .15s',fontFamily:'Inter'}}>{c}</button>)}
-      </div>
-    </div>
-  </section>
+    // CAT TABS
+    h('section',{style:{borderTop:'1px solid var(--b)',borderBottom:'1px solid var(--b)'}},
+      h('div',{style:W},
+        h('div',{style:{display:'flex',gap:0,overflowX:'auto'}},
+          ...CATS.map(c=>h('button',{key:c,onClick:()=>setCat(c),style:{padding:'11px 14px',background:'none',border:'none',fontSize:13,fontWeight:500,color:cat===c?'#fff':'var(--t3)',borderBottom:'2px solid '+(cat===c?'var(--p)':'transparent'),cursor:'pointer',whiteSpace:'nowrap',fontFamily:'Inter'}},c))
+        )
+      )
+    ),
 
-  {/* SEARCH */}
-  <section style={{padding:'20px 0',borderBottom:'1px solid var(--b)'}}>
-    <div style={{...W,display:'flex',flexDirection:'column',gap:14}}>
-      <div style={{display:'flex',gap:10}}>
-        <div style={{position:'relative',flex:1}}>
-          <svg style={{position:'absolute',left:12,top:'50%',transform:'translateY(-50%)',color:'var(--t3)'}} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input value={q} onChange={e=>setQ(e.target.value)} placeholder="기술명, 설명, 태그 검색..." style={{paddingLeft:34,fontSize:13}}/>
-        </div>
-        {(q||tag)&&<button className="bs" onClick={()=>{setQ('');setTag('');}} style={{whiteSpace:'nowrap',padding:'8px 14px',fontSize:12}}>초기화</button>}
-      </div>
-      <div style={{display:'flex',gap:6,flexWrap:'wrap',alignItems:'center'}}>
-        <span className="lbl" style={{marginRight:4}}>태그</span>
-        {['자동화','한국어','MCP','에이전트','법무','모빌리티','실시간','Claude'].map(t=>(
-          <button key={t} onClick={()=>setTag(tag===t?'':t)} style={{padding:'3px 10px',background:tag===t?'rgba(124,58,237,.14)':'transparent',border:`1px solid ${tag===t?'rgba(124,58,237,.4)':'var(--b)'}`,borderRadius:4,fontSize:12,fontWeight:500,color:tag===t?'#C4B5FD':'var(--t3)',cursor:'pointer',transition:'all .15s',fontFamily:'Inter'}}>#{t}</button>
-        ))}
-        {(q||tag)&&<span style={{fontSize:12,color:'var(--t3)',marginLeft:6}}>{filtered.length}개 결과</span>}
-      </div>
-    </div>
-  </section>
+    // SEARCH
+    h('section',{style:{padding:'18px 0',borderBottom:'1px solid var(--b)'}},
+      h('div',{style:{...W,display:'flex',gap:10}},
+        h('input',{value:q,onChange:e=>setQ(e.target.value),placeholder:'기술명, 설명 검색...',style:{fontSize:13}}),
+        q&&h('button',{className:'bs',onClick:()=>setQ(''),style:{whiteSpace:'nowrap',padding:'8px 14px',fontSize:12}},'초기화')
+      )
+    ),
 
-  {/* CARDS */}
-  <section id="market" style={{padding:'36px 0 72px'}}>
-    <div style={W}>
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20}}>
-        <div><h2 style={{fontSize:18,fontWeight:600,letterSpacing:'-.02em'}}>인기 기술</h2><p style={{fontSize:13,color:'var(--t3)',marginTop:3}}>다운로드 · 도네이션 · 실사용 기반 랭킹</p></div>
-      </div>
-      {loading?(
-        <div style={{textAlign:'center',padding:'56px 0',color:'var(--t3)'}}>
-          <div style={{fontSize:28,marginBottom:10}}>◎</div>
-          <div style={{fontSize:14}}>로딩 중...</div>
-        </div>
-      ):filtered.length===0?(
-        <div style={{textAlign:'center',padding:'56px 0',color:'var(--t3)'}}>
-          <div style={{fontSize:28,marginBottom:10}}>◎</div>
-          <div style={{fontSize:14}}>검색 결과가 없습니다</div>
-        </div>
-      ):(
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))',gap:14}}>
-          {filtered.map((c,i)=>(
-            <div key={c.id} className="card" onClick={()=>setDetail(c)} style={{padding:22,cursor:'pointer',display:'flex',flexDirection:'column',gap:18}}>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-                <span style={{fontSize:26,lineHeight:1}}>{c.icon}</span>
-                <div style={{display:'flex',gap:5,alignItems:'center'}}>
-                  <span className="lbl">{c.cat}</span>
-                  {c.badge&&<span style={{display:'inline-flex',alignItems:'center',padding:'2px 7px',borderRadius:4,fontSize:11,fontWeight:600,background:`${c.bc}18`,color:c.bc,border:`1px solid ${c.bc}28`}}>{c.badge}</span>}
-                </div>
-              </div>
-              <div>
-                <h3 style={{fontSize:14,fontWeight:600,letterSpacing:'-.02em',marginBottom:5}}>{c.title}</h3>
-                <p style={{fontSize:13,color:'var(--t2)',lineHeight:1.55}}>{c.short}</p>
-              </div>
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:0,borderTop:'1px solid var(--b)',paddingTop:14}}>
-                {[['DL',fmt(c.dl),'var(--pl)'],['Fork',fmt(c.forks),'#60A5FA'],['Donate',c.donate,'#22C55E']].map(([l,v,col],j)=>(
-                  <div key={l} style={{paddingLeft:j>0?12:0,borderLeft:j>0?'1px solid var(--b)':'none'}}>
-                    <div className="lbl" style={{marginBottom:3}}>{l}</div>
-                    <div style={{fontSize:13,fontWeight:600,color:col}}>{v}</div>
-                  </div>
-                ))}
-              </div>
-              <div style={{display:'flex',gap:8}} onClick={e=>e.stopPropagation()}>
-                <button className="bp" onClick={()=>{setPay(c);setAmt(c.price);}} style={{flex:1,justifyContent:'center',padding:'9px 0',fontSize:13}}>다운로드</button>
-                <button className="bs" onClick={()=>{setDon(c);setAmt(100);}} style={{flex:1,justifyContent:'center',padding:'9px 0',fontSize:13}}>도네이션</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  </section>
+    // CARDS
+    h('section',{id:'market',style:{padding:'32px 0 64px'}},
+      h('div',{style:W},
+        h('div',{style:{marginBottom:20}},
+          h('h2',{style:{fontSize:18,fontWeight:600,letterSpacing:'-.02em'}},'인기 기술'),
+          h('p',{style:{fontSize:13,color:'var(--t3)',marginTop:3}},'다운로드 · 도네이션 · 실사용 기반 랭킹')
+        ),
+        loading
+          ? h('div',{style:{textAlign:'center',padding:'56px 0',color:'var(--t3)'}},h('div',{style:{fontSize:28,marginBottom:10}},'◎'),h('div',{style:{fontSize:14}},'로딩 중...'))
+          : h('div',{style:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))',gap:14}},
+            ...filtered.map(c=>h('div',{key:c.id,className:'card',style:{padding:20,cursor:'pointer',display:'flex',flexDirection:'column',gap:16}},
+              h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
+                h('span',{style:{fontSize:24}},c.icon),
+                h('div',{style:{display:'flex',gap:5,alignItems:'center'}},
+                  h('span',{className:'lbl'},c.cat),
+                  c.badge&&h('span',{style:{display:'inline-flex',alignItems:'center',padding:'2px 7px',borderRadius:4,fontSize:11,fontWeight:600,background:c.bc+'18',color:c.bc,border:'1px solid '+c.bc+'28'}},c.badge)
+                )
+              ),
+              h('div',null,
+                h('h3',{style:{fontSize:14,fontWeight:600,letterSpacing:'-.02em',marginBottom:4}},c.title),
+                h('p',{style:{fontSize:12,color:'var(--t2)',lineHeight:1.55}},c.short)
+              ),
+              h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:0,borderTop:'1px solid var(--b)',paddingTop:12}},
+                ...[['DL',fmt(c.dl),'var(--pl)'],['Fork',fmt(c.forks),'#60A5FA'],['Donate',c.donate,'#22C55E']].map(([l,v,col],j)=>
+                  h('div',{key:l,style:{paddingLeft:j>0?10:0,borderLeft:j>0?'1px solid var(--b)':'none'}},
+                    h('div',{className:'lbl',style:{marginBottom:3}},l),
+                    h('div',{style:{fontSize:12,fontWeight:600,color:col}},v)
+                  )
+                )
+              ),
+              h('div',{style:{display:'flex',gap:8}},
+                h('button',{className:'bp',onClick:()=>{setPay(c);setAmt(c.price);},style:{flex:1,justifyContent:'center',padding:'9px 0',fontSize:12}},'다운로드'),
+                h('button',{className:'bs',onClick:()=>{setDon(c);setAmt(100);},style:{flex:1,justifyContent:'center',padding:'9px 0',fontSize:12}},'도네이션')
+              )
+            ))
+          )
+      )
+    ),
 
-  {/* RANKING + LINEAGE */}
-  <section style={{borderTop:'1px solid var(--b)',padding:'56px 0 72px'}}>
-    <div style={{...W,display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}} className="two-col">
-      <div className="card" style={{padding:26}}>
-        <div style={{marginBottom:22,paddingBottom:18,borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-          <div><div className="lbl" style={{marginBottom:5}}>Weekly · Top Creator</div><h3 style={{fontSize:17,fontWeight:600,letterSpacing:'-.02em'}}>랭킹 TOP 5</h3></div>
-          <span style={{fontSize:18}}>★</span>
-        </div>
-        {ranked.slice(0,5).map((c,i)=>(
-          <div key={c.id} style={{display:'grid',gridTemplateColumns:'28px 1fr auto',alignItems:'center',gap:12,padding:'11px 0',borderBottom:i<4?'1px solid var(--b)':'none'}}>
-            <div style={{fontSize:12,fontWeight:700,color:i===0?'var(--pl)':'var(--t3)'}}>{String(i+1).padStart(2,'0')}</div>
-            <div><div style={{fontSize:13,fontWeight:600,marginBottom:2}}>{c.title}</div><div className="lbl">by {c.creator}</div></div>
-            <div style={{textAlign:'right'}}><div style={{fontSize:13,fontWeight:600,color:'#22C55E'}}>₩{(c.ne/1000).toFixed(0)}K</div><div className="lbl" style={{marginTop:2}}>{c.cat}</div></div>
-          </div>
-        ))}
-      </div>
+    // RANKING + LINEAGE
+    h('section',{style:{borderTop:'1px solid var(--b)',padding:'48px 0 64px'}},
+      h('div',{style:{...W,display:'grid',gridTemplateColumns:'1fr 1fr',gap:20},className:'two-col'},
+        h('div',{className:'card',style:{padding:24}},
+          h('div',{style:{marginBottom:20,paddingBottom:16,borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
+            h('div',null,h('div',{className:'lbl',style:{marginBottom:4}},'Weekly · Top Creator'),h('h3',{style:{fontSize:16,fontWeight:600}},'랭킹 TOP 5')),
+            h('span',{style:{fontSize:16}},'★')
+          ),
+          ...ranked.slice(0,5).map((c,i)=>h('div',{key:c.id,style:{display:'grid',gridTemplateColumns:'26px 1fr auto',alignItems:'center',gap:10,padding:'10px 0',borderBottom:i<4?'1px solid var(--b)':'none'}},
+            h('div',{style:{fontSize:12,fontWeight:700,color:i===0?'var(--pl)':'var(--t3)'}},String(i+1).padStart(2,'0')),
+            h('div',null,h('div',{style:{fontSize:12,fontWeight:600,marginBottom:2}},c.title),h('div',{className:'lbl'},'by '+c.creator)),
+            h('div',{style:{textAlign:'right'}},h('div',{style:{fontSize:12,fontWeight:600,color:'#22C55E'}},'₩'+(c.ne/1000).toFixed(0)+'K'),h('div',{className:'lbl',style:{marginTop:2}},c.cat))
+          ))
+        ),
+        h('div',{className:'card',style:{padding:24}},
+          h('div',{style:{marginBottom:20,paddingBottom:16,borderBottom:'1px solid var(--b)'}},h('div',{className:'lbl',style:{marginBottom:4}},'Tech · Lineage'),h('h3',{style:{fontSize:16,fontWeight:600}},'기술 진화 계보')),
+          h('div',{style:{display:'flex',flexDirection:'column',gap:0}},
+            ...[{label:'ORIGIN',title:'PromptChain v1',color:'var(--pl)'},{label:'FORK 01',title:'Agent AutoFlow',color:'#60A5FA'},{label:'FORK 02',title:'MCP Enterprise',color:'#60A5FA'},{label:'EVOLVED',title:'Autonomous AI Operator',color:'#22C55E',sub:'원본 제작자 포함 자동 수익 분배 중',big:true}].map((n,i,arr)=>
+              h('div',{key:i,style:{display:'flex',gap:12,paddingBottom:i<arr.length-1?16:0,position:'relative'}},
+                i<arr.length-1&&h('div',{style:{position:'absolute',left:6,top:14,bottom:0,width:1,background:'var(--b)'}}),
+                h('div',{style:{width:12,height:12,borderRadius:'50%',background:n.big?n.color:'transparent',border:'1.5px solid '+n.color,flexShrink:0,marginTop:3}}),
+                h('div',null,h('div',{className:'lbl',style:{color:n.color,marginBottom:3}},n.label),h('div',{style:{fontSize:n.big?14:13,fontWeight:n.big?600:500}},n.title),n.sub&&h('div',{style:{fontSize:11,color:'var(--t3)',marginTop:3}},n.sub))
+              )
+            )
+          )
+        )
+      )
+    ),
 
-      <div className="card" style={{padding:26}}>
-        <div style={{marginBottom:22,paddingBottom:18,borderBottom:'1px solid var(--b)'}}><div className="lbl" style={{marginBottom:5}}>Tech · Lineage</div><h3 style={{fontSize:17,fontWeight:600,letterSpacing:'-.02em'}}>기술 진화 계보</h3></div>
-        <div style={{display:'flex',flexDirection:'column',gap:0}}>
-          {[{label:'ORIGIN',title:'PromptChain v1',color:'var(--pl)',big:false},{label:'FORK 01',title:'Agent AutoFlow',color:'#60A5FA',big:false},{label:'FORK 02',title:'MCP Enterprise',color:'#60A5FA',big:false},{label:'EVOLVED',title:'Autonomous AI Operator',color:'#22C55E',big:true,sub:'원본 제작자 포함 자동 수익 분배 중'}].map((n,i,arr)=>(
-            <div key={i} style={{display:'flex',gap:12,paddingBottom:i<arr.length-1?18:0,position:'relative'}}>
-              {i<arr.length-1&&<div style={{position:'absolute',left:6,top:16,bottom:0,width:1,background:'var(--b)'}}/>}
-              <div style={{width:13,height:13,borderRadius:'50%',background:n.big?n.color:'transparent',border:`1.5px solid ${n.color}`,flexShrink:0,marginTop:3}}/>
-              <div><div className="lbl" style={{color:n.color,marginBottom:3}}>{n.label}</div><div style={{fontSize:n.big?15:13,fontWeight:n.big?600:500}}>{n.title}</div>{n.sub&&<div style={{fontSize:12,color:'var(--t3)',marginTop:3}}>{n.sub}</div>}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
+    // ARENA
+    h('section',{style:{borderTop:'1px solid var(--b)',padding:'48px 0 64px',position:'relative',overflow:'hidden'}},
+      h('div',{style:{position:'absolute',inset:0,background:'radial-gradient(ellipse 50% 70% at 50% 50%,rgba(124,58,237,.07) 0%,transparent 65%)',pointerEvents:'none'}}),
+      h('div',{style:{...W,position:'relative'}},
+        h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:48,alignItems:'center'},className:'arena-2col'},
+          h('div',null,
+            h('div',{className:'lbl',style:{marginBottom:8,color:'var(--pl)'}},'Weekly · Arena'),
+            h('h3',{style:{fontSize:'clamp(28px,4vw,48px)',fontWeight:700,letterSpacing:'-.04em',lineHeight:1.1,marginBottom:12}},'AI 기술을',h('br'),'맞붙여라'),
+            h('p',{style:{fontSize:14,color:'var(--t2)',lineHeight:1.65,marginBottom:24}},'매주 두 기술이 맞붙습니다. 실사용자 투표로 승자가 결정되고 TOP10 랭킹에 가산점이 반영됩니다.'),
+            h('button',{className:'bp',onClick:()=>setArena(true),style:{padding:'11px 22px',fontSize:14}},'배틀 참여하기 →')
+          ),
+          h('div',{style:{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:10,alignItems:'center'},className:'arena-cards'},
+            h('div',{className:'card arena-vs',style:{padding:14,cursor:'pointer',borderColor:'rgba(124,58,237,.28)'},onClick:()=>setArena(true)},
+              h('div',{style:{fontSize:20,marginBottom:6}},bt.left.icon),
+              h('div',{className:'lbl',style:{marginBottom:2}},bt.left.cat),
+              h('div',{style:{fontSize:12,fontWeight:600,lineHeight:1.3,marginBottom:4}},bt.left.title),
+              h('div',{style:{fontSize:11,color:'var(--pl)',fontWeight:500}},lp+'% 우세')
+            ),
+            h('div',{style:{textAlign:'center',fontSize:13,color:'var(--t3)',fontWeight:600}},'VS'),
+            h('div',{className:'card',style:{padding:14,cursor:'pointer',borderColor:'rgba(96,165,250,.28)'},onClick:()=>setArena(true)},
+              h('div',{style:{fontSize:20,marginBottom:6}},bt.right.icon),
+              h('div',{className:'lbl',style:{marginBottom:2}},bt.right.cat),
+              h('div',{style:{fontSize:12,fontWeight:600,lineHeight:1.3,marginBottom:4}},bt.right.title),
+              h('div',{style:{fontSize:11,color:'#60A5FA',fontWeight:500}},rp+'% 우세')
+            )
+          )
+        )
+      )
+    ),
 
-  {/* ARENA SECTION */}
-  <section style={{borderTop:'1px solid var(--b)',padding:'56px 0 72px',position:'relative',overflow:'hidden'}}>
-    <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 50% 70% at 50% 50%,rgba(124,58,237,.07) 0%,transparent 65%)',pointerEvents:'none'}}/>
-    <div style={{...W,position:'relative'}}>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:56,alignItems:'center'}} className="arena-section-grid">
-        <div>
-          <div className="lbl" style={{marginBottom:10,color:'var(--pl)'}}>Weekly · Arena</div>
-          <h3 style={{fontSize:'clamp(32px,4vw,52px)',fontWeight:700,letterSpacing:'-.04em',lineHeight:1.1,marginBottom:14}}>AI 기술을<br/>맞붙여라</h3>
-          <p style={{fontSize:15,color:'var(--t2)',lineHeight:1.65,marginBottom:28}}>매주 두 기술이 맞붙습니다. 실사용자 투표로 승자가 결정되고 TOP10 랭킹에 가산점이 반영됩니다.</p>
-          <button className="bp" onClick={()=>setArena(true)} style={{padding:'11px 22px',fontSize:14}}>배틀 참여하기 →</button>
-        </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:10,alignItems:'center'}} className="arena-cards">
-          {[bt.left,bt.right].map((s,i)=>(
-            <React.Fragment key={i}>
-              {i===1&&<div style={{textAlign:'center',fontSize:13,color:'var(--t3)',fontWeight:600}} className="arena-vs">VS</div>}
-              <div className="card" onClick={()=>setArena(true)} style={{padding:16,cursor:'pointer',borderColor:i===0?'rgba(124,58,237,.28)':'rgba(96,165,250,.28)'}}>
-                <div style={{fontSize:22,marginBottom:8}}>{s.icon}</div>
-                <div className="lbl" style={{marginBottom:3}}>{s.cat}</div>
-                <div style={{fontSize:13,fontWeight:600,lineHeight:1.3,marginBottom:6}}>{s.title}</div>
-                <div style={{fontSize:12,color:i===0?'var(--pl)':'#60A5FA',fontWeight:500}}>{i===0?lp:rp}% 우세</div>
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
+    // CTA
+    h('section',{style:{borderTop:'1px solid var(--b)',padding:'64px 0 80px',textAlign:'center',position:'relative',overflow:'hidden'}},
+      h('div',{style:{position:'absolute',inset:0,background:'radial-gradient(ellipse 45% 55% at 50% 100%,rgba(124,58,237,.09) 0%,transparent 60%)',pointerEvents:'none'}}),
+      h('div',{style:{...W,position:'relative'}},
+        h('div',{className:'lbl',style:{marginBottom:12}},'Build the Future'),
+        h('h3',{style:{fontSize:'clamp(32px,5.5vw,64px)',fontWeight:700,letterSpacing:'-.04em',lineHeight:1.06,marginBottom:14,color:'#fff'}},'AI 시대의',h('br'),h('span',{style:{color:'var(--pl)'}},'기술 거래소.')),
+        h('p',{style:{fontSize:15,color:'var(--t2)',marginBottom:32,lineHeight:1.65}},'기술을 만들고 경쟁하며 진화시키는 플랫폼.'),
+        h('div',{style:{display:'flex',justifyContent:'center',gap:10,flexWrap:'wrap'}},
+          h('button',{className:'bp',onClick:()=>setUp(true),style:{padding:'11px 22px',fontSize:14}},'지금 업로드하기 →'),
+          h('button',{className:'bs',style:{padding:'11px 22px',fontSize:14}},'투자자 문서 보기')
+        )
+      )
+    ),
 
-  {/* CTA */}
-  <section style={{borderTop:'1px solid var(--b)',padding:'72px 0 96px',textAlign:'center',position:'relative',overflow:'hidden'}}>
-    <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 45% 55% at 50% 100%,rgba(124,58,237,.09) 0%,transparent 60%)',pointerEvents:'none'}}/>
-    <div style={{...W,position:'relative'}}>
-      <div className="lbl" style={{marginBottom:14}}>Build the Future</div>
-      <h3 style={{fontSize:'clamp(36px,5.5vw,72px)',fontWeight:700,letterSpacing:'-.04em',lineHeight:1.06,marginBottom:16,color:'#fff'}}>AI 시대의<br/><span style={{color:'var(--pl)'}}>기술 거래소.</span></h3>
-      <p style={{fontSize:15,color:'var(--t2)',marginBottom:36,lineHeight:1.65}}>기술을 만들고 경쟁하며 진화시키는 플랫폼.</p>
-      <div style={{display:'flex',justifyContent:'center',gap:10,flexWrap:'wrap'}}>
-        <button className="bp" onClick={()=>setUp(true)} style={{padding:'11px 22px',fontSize:14}}>지금 업로드하기 →</button>
-        <button className="bs" style={{padding:'11px 22px',fontSize:14}}>투자자 문서 보기</button>
-      </div>
-    </div>
-  </section>
+    // FOOTER
+    h('footer',{style:{borderTop:'1px solid var(--b)',padding:'20px 0'}},
+      h('div',{style:{...W,display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:10}},
+        h('span',{style:{fontSize:12,color:'var(--t3)',fontWeight:500}},'© 2026 AIXCHANGE'),
+        h('span',{style:{fontSize:12,color:'var(--t3)'}},'Built with Claude · Seoul')
+      )
+    ),
 
-  <footer style={{borderTop:'1px solid var(--b)',padding:'22px 0'}}>
-    <div style={{...W,display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:10}}>
-      <span style={{fontSize:12,color:'var(--t3)',fontWeight:500}}>© 2026 AIXCHANGE</span>
-      <span style={{fontSize:12,color:'var(--t3)'}}>Built with Claude · Seoul</span>
-    </div>
-  </footer>
+    // PAY MODAL
+    pay&&h('div',{onClick:()=>setPay(null),style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.82)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',padding:16}},
+      h('div',{onClick:e=>e.stopPropagation(),className:'card',style:{width:'100%',maxWidth:440,background:'#0c0c0c',borderColor:'rgba(255,255,255,.1)'}},
+        h('div',{style:{padding:'20px 22px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'center'}},
+          h('div',null,h('div',{className:'lbl',style:{marginBottom:3}},'Download'),h('div',{style:{fontSize:14,fontWeight:600}},pay.title)),
+          h('button',{className:'bg',onClick:()=>setPay(null),style:{fontSize:20}},'×')
+        ),
+        h('div',{style:{padding:'0 22px 22px',display:'flex',flexDirection:'column',gap:12,marginTop:16}},
+          h('div',{style:{display:'flex',gap:8}},
+            ...[100,300,1000].map(p=>h('button',{key:p,onClick:()=>setAmt(p),style:{flex:1,padding:'11px 8px',background:amt===p?'rgba(124,58,237,.14)':'rgba(255,255,255,.03)',border:'1px solid '+(amt===p?'rgba(124,58,237,.4)':'var(--b)'),borderRadius:8,fontSize:14,fontWeight:600,color:amt===p?'#C4B5FD':'var(--t2)',cursor:'pointer',fontFamily:'Inter'}},'₩'+p))
+          ),
+          h('div',{style:{padding:14,background:'rgba(255,255,255,.02)',borderRadius:8,border:'1px solid var(--b)',textAlign:'center'}},
+            h('div',{className:'lbl',style:{marginBottom:4}},'결제 금액'),
+            h('div',{style:{fontSize:28,fontWeight:700,letterSpacing:'-.03em'}},'₩'+amt.toLocaleString())
+          ),
+          h('button',{className:'bp',onClick:()=>{setPay(null);showT('✓ 다운로드가 시작됩니다!');},style:{justifyContent:'center',padding:'12px 0',fontSize:14}},'₩'+amt.toLocaleString()+' 결제하기')
+        )
+      )
+    ),
 
-  {/* DETAIL MODAL */}
-  {detail&&(
-    <div onClick={()=>setDetail(null)} style={{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.85)',backdropFilter:'blur(8px)',display:'flex',justifyContent:'center',alignItems:'flex-start',padding:20,overflowY:'auto'}}>
-      <div onClick={e=>e.stopPropagation()} className="card" style={{width:'100%',maxWidth:660,background:'#0c0c0c',marginTop:28,marginBottom:28,animation:'fadeIn .2s'}}>
-        <div style={{padding:'22px 26px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-          <div style={{display:'flex',gap:14,alignItems:'center'}}>
-            <span style={{fontSize:34}}>{detail.icon}</span>
-            <div>
-              <div style={{display:'flex',gap:5,marginBottom:5}}>
-                <span className="lbl">{detail.cat}</span><span className="lbl">· {detail.tier}</span>
-                {detail.badge&&<span style={{display:'inline-flex',alignItems:'center',padding:'2px 7px',borderRadius:4,fontSize:11,fontWeight:600,background:`${detail.bc}18`,color:detail.bc,border:`1px solid ${detail.bc}28`}}>{detail.badge}</span>}
-              </div>
-              <h2 style={{fontSize:17,fontWeight:700,letterSpacing:'-.02em'}}>{detail.title}</h2>
-              <div style={{fontSize:12,color:'var(--t3)',marginTop:3}}>by {detail.creator}</div>
-            </div>
-          </div>
-          <button className="bg" onClick={()=>setDetail(null)} style={{fontSize:22}}>×</button>
-        </div>
-        <div style={{padding:26}}>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:0,marginBottom:24,borderBottom:'1px solid var(--b)',paddingBottom:18}}>
-            {[['DL',fmt(detail.dl),'var(--pl)'],['Fork',fmt(detail.forks),'#60A5FA'],['Earned',`₩${(net(detail.earned)/1000).toFixed(0)}K`,'#22C55E'],['Donate',detail.donate,'#F59E0B']].map(([l,v,c],j)=>(
-              <div key={l} style={{paddingLeft:j>0?14:0,borderLeft:j>0?'1px solid var(--b)':'none'}}>
-                <div className="lbl" style={{marginBottom:4}}>{l}</div>
-                <div style={{fontSize:15,fontWeight:700,color:c}}>{v}</div>
-              </div>
-            ))}
-          </div>
-          <p style={{fontSize:14,color:'var(--t2)',lineHeight:1.7,marginBottom:18}}>{detail.desc}</p>
-          <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:20}}>
-            {detail.tags.map(t=><span key={t} style={{padding:'3px 10px',border:'1px solid var(--b)',borderRadius:4,fontSize:12,color:'var(--t3)'}}>#{t}</span>)}
-          </div>
-          <div style={{marginBottom:20,padding:14,background:'rgba(255,255,255,.02)',borderRadius:8,border:'1px solid var(--b)'}}>
-            <div className="lbl" style={{marginBottom:8}}>Lineage</div>
-            <div style={{display:'flex',alignItems:'center',gap:7,flexWrap:'wrap'}}>
-              {detail.forkFrom&&<><span style={{padding:'3px 9px',background:'rgba(124,58,237,.1)',border:'1px solid rgba(124,58,237,.2)',borderRadius:4,fontSize:12,color:'#C4B5FD'}}>← {detail.forkFrom}</span><span style={{color:'var(--t3)'}}>›</span></>}
-              <span style={{padding:'3px 9px',background:'rgba(234,179,8,.1)',border:'1px solid rgba(234,179,8,.2)',borderRadius:4,fontSize:12,color:'#FDE047',fontWeight:600}}>★ {detail.title}</span>
-              {detail.forkTo.map(f=><React.Fragment key={f}><span style={{color:'var(--t3)'}}>›</span><span style={{padding:'3px 9px',background:'rgba(96,165,250,.1)',border:'1px solid rgba(96,165,250,.2)',borderRadius:4,fontSize:12,color:'#93C5FD'}}>{f} →</span></React.Fragment>)}
-            </div>
-          </div>
-          <div style={{marginBottom:20}}>
-            <div className="lbl" style={{marginBottom:10}}>Recent Donations</div>
-            {detail.hist.map((h,i)=>(
-              <div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 0',borderBottom:'1px solid var(--b)'}}>
-                <div><span style={{fontSize:13,fontWeight:500}}>{h.u}</span>{h.m&&<span style={{fontSize:12,color:'var(--t3)',marginLeft:8}}>"{h.m}"</span>}</div>
-                <div style={{textAlign:'right'}}><div style={{fontSize:13,fontWeight:600,color:'#22C55E'}}>+₩{h.a.toLocaleString()}</div><div className="lbl" style={{marginTop:2}}>{h.d}</div></div>
-              </div>
-            ))}
-          </div>
-          <div style={{marginBottom:22}}>
-            <div className="lbl" style={{marginBottom:10}}>Reviews</div>
-            {detail.reviews.map((r,i)=>(
-              <div key={i} style={{padding:13,background:'rgba(255,255,255,.02)',borderRadius:8,border:'1px solid var(--b)',marginBottom:7}}>
-                <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:5}}><span style={{fontSize:12,fontWeight:600,color:'var(--pl)'}}>{r.u}</span><span style={{fontSize:12,color:'#EAB308'}}>{'★'.repeat(r.s)}{'☆'.repeat(5-r.s)}</span></div>
-                <p style={{fontSize:13,color:'var(--t2)'}}>{r.t}</p>
-              </div>
-            ))}
-          </div>
-          <div style={{display:'flex',gap:10}}>
-            <button className="bp" onClick={()=>{setDetail(null);setPay(detail);setAmt(detail.price);}} style={{flex:1,justifyContent:'center',padding:'11px 0'}}>₩{detail.price} 다운로드</button>
-            <button className="bs" onClick={()=>{setDetail(null);setDon(detail);setAmt(100);}} style={{flex:1,justifyContent:'center',padding:'11px 0'}}>도네이션 ♡</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )}
+    // DONATE MODAL
+    don&&h('div',{onClick:()=>setDon(null),style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.82)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',padding:16}},
+      h('div',{onClick:e=>e.stopPropagation(),className:'card',style:{width:'100%',maxWidth:440,background:'#0c0c0c',borderColor:'rgba(255,255,255,.1)'}},
+        h('div',{style:{padding:'20px 22px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'center'}},
+          h('div',null,h('div',{className:'lbl',style:{marginBottom:3}},'Donation ♡'),h('div',{style:{fontSize:14,fontWeight:600}},don.title)),
+          h('button',{className:'bg',onClick:()=>setDon(null),style:{fontSize:20}},'×')
+        ),
+        h('div',{style:{padding:'0 22px 22px',display:'flex',flexDirection:'column',gap:12,marginTop:16}},
+          h('div',{style:{display:'flex',gap:8}},
+            ...[100,300,1000].map(p=>h('button',{key:p,onClick:()=>setAmt(p),style:{flex:1,padding:'14px 8px',background:amt===p?'rgba(34,197,94,.1)':'rgba(255,255,255,.03)',border:'1px solid '+(amt===p?'rgba(34,197,94,.3)':'var(--b)'),borderRadius:8,fontSize:15,fontWeight:600,color:amt===p?'#86EFAC':'var(--t2)',cursor:'pointer',fontFamily:'Inter'}},'₩'+p))
+          ),
+          h('div',{style:{padding:12,background:'rgba(255,255,255,.02)',borderRadius:8,border:'1px solid var(--b)',fontSize:13}},
+            h('div',{style:{display:'flex',justifyContent:'space-between',color:'var(--t2)',marginBottom:5}},h('span','결제 금액'),h('span','₩'+amt.toLocaleString())),
+            h('div',{style:{display:'flex',justifyContent:'space-between',color:'var(--r)',marginBottom:6,paddingBottom:6,borderBottom:'1px solid var(--b)'}},h('span','플랫폼 수수료 10%'),h('span','-₩'+fee(amt))),
+            h('div',{style:{display:'flex',justifyContent:'space-between',fontWeight:600}},h('span','제작자 수령액'),h('span',{style:{color:'#22C55E'}},'₩'+net(amt).toLocaleString()))
+          ),
+          h('button',{className:'bp',onClick:()=>{
+            db.from('donations').insert({asset_id:don.id,donor_alias:'익명',amount_gross:amt,amount_net:net(amt),message:''}).then();
+            setDon(null);showT('💚 ₩'+amt+' 도네이션 완료! 제작자 수령 ₩'+net(amt));
+          },style:{justifyContent:'center',padding:'12px 0',fontSize:14,background:'#15803D'}},'₩'+amt+' 도네이션하기')
+        )
+      )
+    ),
 
-  {/* PAY MODAL */}
-  {pay&&<Overlay onClose={()=>setPay(null)}>
-    <MH label="Download" title={pay.title} onClose={()=>setPay(null)}/>
-    <div style={{padding:'0 24px 24px',display:'flex',flexDirection:'column',gap:12,marginTop:16}}>
-      <div style={{display:'flex',gap:8}}>
-        {[100,300,1000].map(p=><button key={p} onClick={()=>setAmt(p)} style={{flex:1,padding:'11px 8px',background:amt===p?'rgba(124,58,237,.14)':'rgba(255,255,255,.03)',border:`1px solid ${amt===p?'rgba(124,58,237,.4)':'var(--b)'}`,borderRadius:8,fontSize:14,fontWeight:600,color:amt===p?'#C4B5FD':'var(--t2)',cursor:'pointer',fontFamily:'Inter'}}>₩{p}</button>)}
-      </div>
-      <div style={{padding:16,background:'rgba(255,255,255,.02)',borderRadius:8,border:'1px solid var(--b)',textAlign:'center'}}>
-        <div className="lbl" style={{marginBottom:5}}>결제 금액</div>
-        <div style={{fontSize:30,fontWeight:700,letterSpacing:'-.03em'}}>₩{amt.toLocaleString()}</div>
-      </div>
-      <button className="bp" onClick={handlePay} style={{justifyContent:'center',padding:'12px 0',fontSize:14}}>₩{amt.toLocaleString()} 결제하기</button>
-    </div>
-  </Overlay>}
+    // AUTH MODAL
+    auth&&h('div',{onClick:()=>setAuth(false),style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.82)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',padding:16}},
+      h('div',{onClick:e=>e.stopPropagation(),className:'card',style:{width:'100%',maxWidth:400,background:'#0c0c0c',borderColor:'rgba(255,255,255,.1)'}},
+        h('div',{style:{padding:'20px 22px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'center'}},
+          h('div',{className:'lbl'},aMode==='login'?'Log in':'Sign up'),
+          h('button',{className:'bg',onClick:()=>setAuth(false),style:{fontSize:20}},'×')
+        ),
+        h('div',{style:{padding:'0 22px 22px',display:'flex',flexDirection:'column',gap:10,marginTop:16}},
+          aMode==='signup'&&h('input',{placeholder:'이름'}),
+          h('input',{id:'auth-email',type:'email',placeholder:'이메일'}),
+          h('input',{id:'auth-pw',type:'password',placeholder:'비밀번호'}),
+          h('button',{className:'bp',onClick:async()=>{
+            const email=document.getElementById('auth-email').value;
+            const pw=document.getElementById('auth-pw').value;
+            if(!email||!pw){showT('이메일과 비밀번호를 입력해주세요.','error');return;}
+            const{error}=aMode==='login'
+              ?await db.auth.signInWithPassword({email,password:pw})
+              :await db.auth.signUp({email,password:pw});
+            if(error){showT(error.message,'error');}
+            else{setAuth(false);showT(aMode==='login'?'✓ 로그인 완료!':'✓ 회원가입 완료! 이메일을 확인해주세요.');}
+          },style:{justifyContent:'center',padding:'11px 0',marginTop:4}},aMode==='login'?'로그인':'회원가입'),
+          h('div',{style:{textAlign:'center',fontSize:13,color:'var(--t3)'}},
+            aMode==='login'
+              ?h('span',null,'계정 없으신가요? ',h('button',{className:'bg',onClick:()=>setAMode('signup'),style:{color:'var(--pl)'}},'회원가입'))
+              :h('span',null,'이미 계정이 있으신가요? ',h('button',{className:'bg',onClick:()=>setAMode('login'),style:{color:'var(--pl)'}},'로그인'))
+          )
+        )
+      )
+    ),
 
-  {/* DONATE MODAL */}
-  {don&&<Overlay onClose={()=>setDon(null)}>
-    <MH label="Donation ♡" title={don.title} onClose={()=>setDon(null)}/>
-    <div style={{padding:'0 24px 24px',display:'flex',flexDirection:'column',gap:12,marginTop:16}}>
-      <div style={{display:'flex',gap:8}}>
-        {[100,300,1000].map(p=><button key={p} onClick={()=>setAmt(p)} style={{flex:1,padding:'14px 8px',background:amt===p?'rgba(34,197,94,.1)':'rgba(255,255,255,.03)',border:`1px solid ${amt===p?'rgba(34,197,94,.3)':'var(--b)'}`,borderRadius:8,fontSize:15,fontWeight:600,color:amt===p?'#86EFAC':'var(--t2)',cursor:'pointer',fontFamily:'Inter'}}>₩{p}</button>)}
-      </div>
-      <div style={{padding:13,background:'rgba(255,255,255,.02)',borderRadius:8,border:'1px solid var(--b)',fontSize:13}}>
-        <div style={{display:'flex',justifyContent:'space-between',color:'var(--t2)',marginBottom:5}}><span>결제 금액</span><span>₩{amt.toLocaleString()}</span></div>
-        <div style={{display:'flex',justifyContent:'space-between',color:'var(--r)',marginBottom:7,paddingBottom:7,borderBottom:'1px solid var(--b)'}}><span>플랫폼 수수료 10%</span><span>-₩{fee(amt)}</span></div>
-        <div style={{display:'flex',justifyContent:'space-between',fontWeight:600}}><span>제작자 수령액</span><span style={{color:'#22C55E'}}>₩{net(amt).toLocaleString()}</span></div>
-      </div>
-      <button className="bp" onClick={handleTossDonate} style={{justifyContent:'center',padding:'12px 0',fontSize:14,background:'#15803D'}}>₩{amt} 도네이션하기</button>
-    </div>
-  </Overlay>}
+    // UPLOAD MODAL
+    up&&h('div',{onClick:()=>setUp(false),style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.82)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',padding:16}},
+      h('div',{onClick:e=>e.stopPropagation(),className:'card',style:{width:'100%',maxWidth:440,background:'#0c0c0c',borderColor:'rgba(255,255,255,.1)'}},
+        h('div',{style:{padding:'20px 22px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'center'}},
+          h('div',{className:'lbl'},'Upload · Asset'),
+          h('button',{className:'bg',onClick:()=>setUp(false),style:{fontSize:20}},'×')
+        ),
+        h('div',{style:{padding:'0 22px 22px',display:'flex',flexDirection:'column',gap:10,marginTop:16}},
+          h('input',{id:'up-title',placeholder:'제목'}),
+          h('select',{id:'up-cat'},
+            ...['PROMPT','AGENT','SKILL','MCP','HARNESS'].map(c=>h('option',{key:c},c))
+          ),
+          h('textarea',{id:'up-desc',placeholder:'설명 (어떤 문제를 해결하나요?)',rows:4,style:{resize:'none'}}),
+          h('button',{className:'bp',onClick:async()=>{
+            const title=document.getElementById('up-title').value;
+            const desc=document.getElementById('up-desc').value;
+            const cat=document.getElementById('up-cat').value;
+            if(!title||!desc){showT('제목과 설명을 입력해주세요.','error');return;}
+            const{error}=await db.from('assets').insert({title,description:desc,category:cat,price:100,icon:'✦',status:'ACTIVE'});
+            if(error){showT(error.message,'error');}
+            else{setUp(false);showT('🎉 업로드 완료!');}
+          },style:{justifyContent:'center',padding:'11px 0',marginTop:4}},'업로드 실행')
+        )
+      )
+    ),
 
-  {/* AUTH MODAL */}
-  {auth&&<Overlay onClose={()=>setAuth(false)}>
-    <MH label={aMode==='login'?'Log in':'Sign up'} title={aMode==='login'?'로그인':'회원가입'} onClose={()=>setAuth(false)}/>
-    <div style={{padding:'0 24px 24px',display:'flex',flexDirection:'column',gap:10,marginTop:16}}>
-      {aMode==='signup'&&<input placeholder="이름"/>}
-      <input id="auth-email" type="email" placeholder="이메일"/>
-      <input id="auth-pw" type="password" placeholder="비밀번호"/>
-      <button className="bp" onClick={handleAuth} disabled={authLoading} style={{justifyContent:'center',padding:'11px 0',marginTop:4,opacity:authLoading?.6:1}}>
-        {authLoading?'처리 중...':(aMode==='login'?'로그인':'회원가입')}
-      </button>
-      <div style={{textAlign:'center',fontSize:13,color:'var(--t3)'}}>
-        {aMode==='login'?<span>계정 없으신가요? <button className="bg" onClick={()=>setAMode('signup')} style={{color:'var(--pl)'}}>회원가입</button></span>:<span>이미 계정이 있으신가요? <button className="bg" onClick={()=>setAMode('login')} style={{color:'var(--pl)'}}>로그인</button></span>}
-      </div>
-    </div>
-  </Overlay>}
+    // ARENA MODAL
+    arena&&h('div',{onClick:()=>{setArena(false);setVoted(null);setRes(false);},style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.92)',backdropFilter:'blur(12px)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}},
+      h('div',{onClick:e=>e.stopPropagation(),style:{width:'100%',maxWidth:680}},
+        h('div',{style:{textAlign:'center',marginBottom:24}},
+          h('div',{className:'lbl',style:{color:'var(--pl)',marginBottom:6}},'⚔ '+bt.label),
+          h('h2',{style:{fontSize:24,fontWeight:700,letterSpacing:'-.03em',marginBottom:4}},voted?'결과를 확인하세요':'더 뛰어난 기술에 투표하세요'),
+          h('p',{style:{fontSize:12,color:'var(--t3)'}},tv.toLocaleString()+'명 참여 중')
+        ),
+        h('div',{style:{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:10,alignItems:'stretch',marginBottom:12},className:'arena-cards'},
+          ...[bt.left,bt.right].flatMap((s,i)=>[
+            i===1&&h('div',{key:'vs',style:{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}},h('span',{style:{fontSize:13,fontWeight:700,color:'var(--t3)'}},'VS')),
+            h('div',{key:i,className:'card',onClick:()=>{if(!voted){setVoted(i===0?'left':'right');setTimeout(()=>setRes(true),300);}},style:{padding:20,cursor:voted?'default':'pointer',borderColor:voted===(i===0?'left':'right')?(i===0?'rgba(124,58,237,.5)':'rgba(96,165,250,.5)'):'var(--b)',background:voted===(i===0?'left':'right')?(i===0?'rgba(124,58,237,.06)':'rgba(96,165,250,.06)'):'var(--s)',opacity:voted&&voted!==(i===0?'left':'right')?.42:1,transition:'all .2s'}},
+              h('div',{style:{fontSize:28,marginBottom:10}},s.icon),
+              h('div',{className:'lbl',style:{marginBottom:3,color:i===0?'var(--pl)':'#60A5FA'}},s.cat),
+              h('div',{style:{fontSize:14,fontWeight:600,letterSpacing:'-.02em',marginBottom:4,lineHeight:1.3}},s.title),
+              h('p',{style:{fontSize:12,color:'var(--t2)',marginBottom:12}},s.desc),
+              res
+                ?h('div',null,
+                    h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:4}},h('span',{style:{fontSize:16,fontWeight:700,color:i===0?'var(--pl)':'#60A5FA'}},(i===0?lp:rp)+'%'),h('span',{style:{fontSize:11,color:'var(--t3)',alignSelf:'flex-end'}},(i===0?bt.lv+(voted==='left'?1:0):bt.rv+(voted==='right'?1:0)).toLocaleString()+'표')),
+                    h('div',{style:{height:3,background:'rgba(255,255,255,.06)',borderRadius:2,overflow:'hidden'}},h('div',{style:{height:'100%',borderRadius:2,width:(i===0?lp:rp)+'%',background:i===0?'var(--p)':'#3B82F6',transition:'width .65s cubic-bezier(.16,1,.3,1)'}}))
+                  )
+                :h('div',{style:{padding:'6px',textAlign:'center',border:'1px solid '+(i===0?'rgba(124,58,237,.3)':'rgba(96,165,250,.3)'),borderRadius:6,fontSize:12,fontWeight:500,color:i===0?'var(--pl)':'#60A5FA'}},voted===(i===0?'left':'right')?'✓ 투표 완료':'투표하기')
+            )
+          ].filter(Boolean))
+        ),
+        res&&h('div',{style:{padding:'10px 14px',textAlign:'center',marginBottom:10,border:'1px solid '+(lp>rp?'rgba(124,58,237,.3)':'rgba(96,165,250,.3)'),borderRadius:8,fontSize:13,fontWeight:500,color:lp>rp?'var(--pl)':'#60A5FA'}},'현재 우세 · ',(lp>rp?bt.left:bt.right).title),
+        h('div',{style:{display:'flex',gap:10}},
+          h('button',{className:'bs',onClick:()=>{setArena(false);setVoted(null);setRes(false);},style:{flex:1,justifyContent:'center',padding:'11px 0'}},'닫기'),
+          voted&&h('button',{className:'bp',onClick:()=>{setVoted(null);setRes(false);setAIdx((aIdx+1)%BATTLES.length);},style:{flex:1,justifyContent:'center',padding:'11px 0'}},'다음 배틀 →')
+        ),
+        h('div',{style:{display:'flex',justifyContent:'center',gap:5,marginTop:12}},
+          ...BATTLES.map((_,i)=>h('div',{key:i,style:{width:i===aIdx?18:5,height:3,borderRadius:2,background:i===aIdx?'var(--p)':'rgba(255,255,255,.12)',transition:'width .2s'}}))
+        )
+      )
+    ),
 
-  {/* UPLOAD MODAL */}
-  {up&&<Overlay onClose={()=>setUp(false)}>
-    <MH label="Upload · Asset" title="AI 기술 업로드" onClose={()=>setUp(false)}/>
-    <div style={{padding:'0 24px 24px',display:'flex',flexDirection:'column',gap:10,marginTop:16}}>
-      <input placeholder="제목" value={upData.title} onChange={e=>setUpData(p=>({...p,title:e.target.value}))}/>
-      <select value={upData.cat} onChange={e=>setUpData(p=>({...p,cat:e.target.value}))}>
-        {['PROMPT','AGENT','SKILL','MCP','HARNESS'].map(c=><option key={c}>{c}</option>)}
-      </select>
-      <div style={{display:'flex',gap:8}}>
-        {[100,300,1000].map(p=><button key={p} onClick={()=>setUpData(d=>({...d,price:p}))} style={{flex:1,padding:'10px',background:upData.price===p?'rgba(124,58,237,.2)':'rgba(255,255,255,.03)',border:`1px solid ${upData.price===p?'rgba(124,58,237,.5)':'var(--b)'}`,borderRadius:8,color:upData.price===p?'#C4B5FD':'var(--t2)',fontSize:13,fontWeight:600,cursor:'pointer',fontFamily:'Inter'}}>₩{p}</button>)}
-      </div>
-      <textarea placeholder="설명 (어떤 문제를 해결하나요?)" rows={4} style={{resize:'none'}} value={upData.desc} onChange={e=>setUpData(p=>({...p,desc:e.target.value}))}/>
-      <button className="bp" onClick={handleUpload} disabled={upLoading} style={{justifyContent:'center',padding:'11px 0',marginTop:4,opacity:upLoading?.6:1}}>
-        {upLoading?'업로드 중...':'업로드 실행'}
-      </button>
-      {!user&&<div style={{textAlign:'center',fontSize:12,color:'var(--t3)'}}>로그인 후 업로드 가능합니다</div>}
-    </div>
-  </Overlay>}
-
-  {/* ARENA MODAL */}
-  {arena&&(
-    <div onClick={()=>{setArena(false);setVoted(null);setRes(false);}} style={{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.92)',backdropFilter:'blur(12px)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
-      <div onClick={e=>e.stopPropagation()} style={{width:'100%',maxWidth:700,animation:'fadeIn .2s'}}>
-        <div style={{textAlign:'center',marginBottom:28}}>
-          <div className="lbl" style={{color:'var(--pl)',marginBottom:8}}>⚔ {bt.label}</div>
-          <h2 style={{fontSize:26,fontWeight:700,letterSpacing:'-.03em',marginBottom:6}}>{voted?'결과를 확인하세요':'더 뛰어난 기술에 투표하세요'}</h2>
-          <p style={{fontSize:13,color:'var(--t3)'}}>{tv.toLocaleString()}명 참여 중</p>
-        </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:12,alignItems:'stretch',marginBottom:14}} className="arena-cards">
-          {[bt.left,bt.right].map((s,i)=>(
-            <React.Fragment key={i}>
-              {i===1&&<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}} className="arena-vs"><span style={{fontSize:14,fontWeight:700,color:'var(--t3)'}}>VS</span></div>}
-              <div className="card" onClick={()=>{if(!voted){setVoted(i===0?'left':'right');setTimeout(()=>setRes(true),300);}}} style={{padding:22,cursor:voted?'default':'pointer',borderColor:voted===(i===0?'left':'right')?(i===0?'rgba(124,58,237,.5)':'rgba(96,165,250,.5)'):'var(--b)',background:voted===(i===0?'left':'right')?(i===0?'rgba(124,58,237,.06)':'rgba(96,165,250,.06)'):'var(--s)',opacity:voted&&voted!==(i===0?'left':'right')?.42:1,transition:'all .2s'}}>
-                <div style={{fontSize:30,marginBottom:12}}>{s.icon}</div>
-                <div className="lbl" style={{marginBottom:3,color:i===0?'var(--pl)':'#60A5FA'}}>{s.cat}</div>
-                <div style={{fontSize:15,fontWeight:600,letterSpacing:'-.02em',marginBottom:5,lineHeight:1.3}}>{s.title}</div>
-                <p style={{fontSize:12,color:'var(--t2)',marginBottom:14}}>{s.desc}</p>
-                {res?(
-                  <div>
-                    <div style={{display:'flex',justifyContent:'space-between',marginBottom:5}}>
-                      <span style={{fontSize:18,fontWeight:700,color:i===0?'var(--pl)':'#60A5FA'}}>{i===0?lp:rp}%</span>
-                      <span style={{fontSize:12,color:'var(--t3)',alignSelf:'flex-end'}}>{(i===0?bt.lv+(voted==='left'?1:0):bt.rv+(voted==='right'?1:0)).toLocaleString()}표</span>
-                    </div>
-                    <div style={{height:3,background:'rgba(255,255,255,.06)',borderRadius:2,overflow:'hidden'}}>
-                      <div style={{height:'100%',borderRadius:2,width:`${i===0?lp:rp}%`,background:i===0?'var(--p)':'#3B82F6',transition:'width .65s cubic-bezier(.16,1,.3,1)'}}/>
-                    </div>
-                  </div>
-                ):(
-                  <div style={{padding:'7px',textAlign:'center',border:`1px solid ${i===0?'rgba(124,58,237,.3)':'rgba(96,165,250,.3)'}`,borderRadius:6,fontSize:12,fontWeight:500,color:i===0?'var(--pl)':'#60A5FA'}}>
-                    {voted===(i===0?'left':'right')?'✓ 투표 완료':'투표하기'}
-                  </div>
-                )}
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
-        {res&&<div style={{padding:'11px 16px',textAlign:'center',marginBottom:12,border:`1px solid ${lp>rp?'rgba(124,58,237,.3)':'rgba(96,165,250,.3)'}`,borderRadius:8,fontSize:13,fontWeight:500,color:lp>rp?'var(--pl)':'#60A5FA'}}>현재 우세 · <strong>{(lp>rp?bt.left:bt.right).title}</strong></div>}
-        <div style={{display:'flex',gap:10}}>
-          <button className="bs" onClick={()=>{setArena(false);setVoted(null);setRes(false);}} style={{flex:1,justifyContent:'center',padding:'11px 0'}}>닫기</button>
-          {voted&&<button className="bp" onClick={()=>{setVoted(null);setRes(false);setAIdx((aIdx+1)%BATTLES.length);}} style={{flex:1,justifyContent:'center',padding:'11px 0'}}>다음 배틀 →</button>}
-        </div>
-        <div style={{display:'flex',justifyContent:'center',gap:5,marginTop:14}}>
-          {BATTLES.map((_,i)=><div key={i} style={{width:i===aIdx?18:5,height:3,borderRadius:2,background:i===aIdx?'var(--p)':'rgba(255,255,255,.12)',transition:'width .2s'}}/>)}
-        </div>
-      </div>
-    </div>
-  )}
-
-  {/* MYPAGE MODAL */}
-  {mp&&(
-    <div onClick={()=>setMp(false)} style={{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.85)',backdropFilter:'blur(8px)',overflowY:'auto',padding:20,display:'flex',justifyContent:'center',alignItems:'flex-start'}}>
-      <div onClick={e=>e.stopPropagation()} className="card" style={{width:'100%',maxWidth:620,background:'#0c0c0c',marginTop:28,marginBottom:28,animation:'fadeIn .2s'}}>
-        <div style={{padding:'22px 26px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-          <div><div className="lbl" style={{marginBottom:4}}>Dashboard</div><h3 style={{fontSize:17,fontWeight:600}}>마이페이지</h3></div>
-          <button className="bg" onClick={()=>setMp(false)} style={{fontSize:22}}>×</button>
-        </div>
-        <div style={{padding:26}}>
-          <div style={{padding:13,background:'rgba(255,255,255,.02)',border:'1px solid var(--b)',borderRadius:8,marginBottom:20,display:'flex',justifyContent:'space-between',fontSize:13,flexWrap:'wrap',gap:8}}>
-            <span style={{color:'var(--t2)'}}>총 거래액 <strong style={{color:'var(--t1)'}}>₩31,800</strong></span>
-            <span style={{color:'var(--r)'}}>수수료 10% −₩3,180</span>
-            <span style={{color:'#22C55E',fontWeight:600}}>실수령 ₩28,620</span>
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:0,marginBottom:24,borderTop:'1px solid var(--b)',borderBottom:'1px solid var(--b)'}} className="mp-grid">
-            {[['실수령','₩28,620'],['이번주','₩164K'],['다운로드','12,842'],['랭킹','#14']].map(([l,v],i)=>(
-              <div key={l} style={{padding:'15px 0',paddingLeft:i>0?14:0,borderLeft:i>0?'1px solid var(--b)':'none'}}>
-                <div className="lbl" style={{marginBottom:4}}>{l}</div>
-                <div style={{fontSize:17,fontWeight:700,letterSpacing:'-.02em'}}>{v}</div>
-              </div>
-            ))}
-          </div>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
-            <div className="lbl">Revenue History</div>
-            <button className="bg" onClick={()=>showT('✓ 정산 요청 완료')} style={{color:'var(--pl)',fontSize:12}}>정산 요청 →</button>
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr auto auto auto',gap:'0 10px',fontSize:11,color:'var(--t3)',fontWeight:600,letterSpacing:'.04em',marginBottom:7,padding:'0 0 7px',borderBottom:'1px solid var(--b)'}}>
-            <span>ITEM</span><span>GROSS</span><span style={{color:'var(--r)'}}>FEE</span><span style={{color:'#22C55E'}}>NET</span>
-          </div>
-          {[{n:'Taxi Surge AI',g:12300,t:'DOWNLOAD',d:'05.13'},{n:'PromptChain v4',g:8200,t:'DONATION',d:'05.12'},{n:'MCP Suite',g:5100,t:'DOWNLOAD',d:'05.11'},{n:'Claude KR Pack',g:3400,t:'FORK_ROYALTY',d:'05.10'}].map((r,i)=>(
-            <div key={i} style={{display:'grid',gridTemplateColumns:'1fr auto auto auto',gap:'0 10px',alignItems:'center',padding:'11px 0',borderBottom:'1px solid var(--b)'}}>
-              <div><div style={{fontSize:13,fontWeight:500}}>{r.n}</div><div className="lbl" style={{marginTop:2}}><span style={{color:'var(--pl)'}}>{r.t}</span> · {r.d}</div></div>
-              <span style={{fontSize:12,color:'var(--t2)'}}>₩{r.g.toLocaleString()}</span>
-              <span style={{fontSize:12,color:'var(--r)'}}>−₩{fee(r.g)}</span>
-              <span style={{fontSize:12,fontWeight:600,color:'#22C55E'}}>₩{net(r.g).toLocaleString()}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )}
-  </>;
+    // MYPAGE MODAL
+    mp&&h('div',{onClick:()=>setMp(false),style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.85)',backdropFilter:'blur(8px)',overflowY:'auto',padding:20,display:'flex',justifyContent:'center',alignItems:'flex-start'}},
+      h('div',{onClick:e=>e.stopPropagation(),className:'card',style:{width:'100%',maxWidth:600,background:'#0c0c0c',marginTop:28,marginBottom:28}},
+        h('div',{style:{padding:'20px 24px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'center'}},
+          h('div',null,h('div',{className:'lbl',style:{marginBottom:4}},'Dashboard'),h('h3',{style:{fontSize:16,fontWeight:600}},'마이페이지')),
+          h('button',{className:'bg',onClick:()=>setMp(false),style:{fontSize:20}},'×')
+        ),
+        h('div',{style:{padding:24}},
+          h('div',{style:{padding:12,background:'rgba(255,255,255,.02)',border:'1px solid var(--b)',borderRadius:8,marginBottom:20,display:'flex',justifyContent:'space-between',fontSize:13,flexWrap:'wrap',gap:8}},
+            h('span',{style:{color:'var(--t2)'}},h('strong',{style:{color:'var(--t1)'}},'₩31,800'),' 총 거래액'),
+            h('span',{style:{color:'var(--r)'}},'수수료 −₩3,180'),
+            h('span',{style:{color:'#22C55E',fontWeight:600}},'실수령 ₩28,620')
+          ),
+          h('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:0,marginBottom:20,borderTop:'1px solid var(--b)',borderBottom:'1px solid var(--b)'},className:'mp-4'},
+            ...[['실수령','₩28,620'],['이번주','₩164K'],['다운로드','12,842'],['랭킹','#14']].map(([l,v],i)=>
+              h('div',{key:l,style:{padding:'14px 0',paddingLeft:i>0?12:0,borderLeft:i>0?'1px solid var(--b)':'none'}},
+                h('div',{className:'lbl',style:{marginBottom:4}},l),
+                h('div',{style:{fontSize:16,fontWeight:700,letterSpacing:'-.02em'}},v)
+              )
+            )
+          ),
+          h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}},
+            h('div',{className:'lbl'},'Revenue History'),
+            h('button',{className:'bg',onClick:()=>showT('✓ 정산 요청 완료'),style:{color:'var(--pl)',fontSize:12}},'정산 요청 →')
+          ),
+          ...[{n:'Taxi Surge AI',g:12300,t:'DOWNLOAD',d:'05.13'},{n:'PromptChain v4',g:8200,t:'DONATION',d:'05.12'},{n:'MCP Suite',g:5100,t:'DOWNLOAD',d:'05.11'},{n:'Claude KR Pack',g:3400,t:'FORK_ROYALTY',d:'05.10'}].map((r,i)=>
+            h('div',{key:i,style:{display:'grid',gridTemplateColumns:'1fr auto auto auto',gap:'0 10px',alignItems:'center',padding:'10px 0',borderBottom:'1px solid var(--b)'}},
+              h('div',null,h('div',{style:{fontSize:12,fontWeight:500}},r.n),h('div',{className:'lbl',style:{marginTop:2}},h('span',{style:{color:'var(--pl)'}},r.t),' · ',r.d)),
+              h('span',{style:{fontSize:11,color:'var(--t2)'}},'₩'+r.g.toLocaleString()),
+              h('span',{style:{fontSize:11,color:'var(--r)'}},'−₩'+fee(r.g)),
+              h('span',{style:{fontSize:11,fontWeight:600,color:'#22C55E'}},'₩'+net(r.g).toLocaleString())
+            )
+          )
+        )
+      )
+    )
+  );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
 </script>
 </body>
 </html>
