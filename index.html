@@ -97,7 +97,7 @@ function Toast({t}){
 function App(){
   const [cat,setCat]=useState('ALL');
   const [q,setQ]=useState('');
-  const [cards,setCards]=useState(MOCK);
+  const [cards,setCards]=useState([]);
   const [loading,setLoading]=useState(true);
   const [pay,setPay]=useState(null);
   const [don,setDon]=useState(null);
@@ -139,6 +139,8 @@ function App(){
       .then(({data,error})=>{
         if(!error&&data&&data.length>0){
           setCards(data.map(a=>({id:a.id,icon:a.icon||'✦',title:a.title,short:a.description,cat:a.category,price:a.price,donate:'₩'+a.price,dl:a.download_count,forks:a.fork_count,badge:a.badge||'',bc:a.badge==='HOT'?'#EF4444':a.badge==='ARENA'?'#7C3AED':a.badge==='NEW'?'#22C55E':'',creator:'Creator',earned:a.donate_net,tags:a.tags||[]})));
+        } else {
+          setCards(MOCK);
         }
         setLoading(false);
       }).catch(()=>setLoading(false));
