@@ -464,8 +464,8 @@ function App(){
     ),
 
     // UPLOAD MODAL
-    up&&h('div',{onClick:()=>setUp(false),style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.82)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',padding:16}},
-      h('div',{onClick:e=>e.stopPropagation(),className:'card',style:{width:'100%',maxWidth:440,background:'#0c0c0c',borderColor:'rgba(255,255,255,.1)'}},
+    up&&h('div',{onClick:()=>setUp(false),style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.82)',backdropFilter:'blur(8px)',display:'flex',alignItems:'flex-end',justifyContent:'center',padding:0}},
+      h('div',{onClick:e=>e.stopPropagation(),className:'card',style:{width:'100%',maxWidth:480,background:'#0c0c0c',borderColor:'rgba(255,255,255,.1)',borderRadius:'12px 12px 0 0',maxHeight:'90vh',overflowY:'auto'}},
         h('div',{style:{padding:'20px 22px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'center'}},
           h('div',{className:'lbl'},'Upload · Asset'),
           h('button',{className:'bg',onClick:()=>setUp(false),style:{fontSize:20}},'×')
