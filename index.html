@@ -104,7 +104,20 @@ function App(){
   const [amt,setAmt]=useState(100);
   const [auth,setAuth]=useState(false);
   const [aMode,setAMode]=useState('login');
-  const [up,setUp]=useState(false);
+  const [likes,setLikes]=useState({}); // {cardId: 'up'|'down'|null}
+
+  const handleLike=async(e,c,type)=>{
+    e.stopPropagation();
+    const prev=likes[c.id];
+    const next=prev===type?null:type;
+    setLikes(p=>({...p,[c.id]:next}));
+    // DB 업데이트
+    try{
+      const col=type==='up'?'like_count':'dislike_count';
+      const delta=next===type?1:-1;
+      await db.rpc('increment_'+col,{row_id:c.id,delta});
+    }catch(e){/* 컬럼 없으면 무시 */}
+  };
   const [arena,setArena]=useState(false);
   const [aIdx,setAIdx]=useState(0);
   const [voted,setVoted]=useState(null);
@@ -262,8 +275,12 @@ function App(){
                 )
               ),
               h('div',{style:{display:'flex',gap:8}},
-                h('button',{className:'bp',onClick:()=>{setPay(c);setAmt(c.price);},style:{flex:1,justifyContent:'center',padding:'9px 0',fontSize:12}},'다운로드'),
-                h('button',{className:'bs',onClick:()=>{setDon(c);setAmt(100);},style:{flex:1,justifyContent:'center',padding:'9px 0',fontSize:12}},'도네이션')
+                h('button',{className:'bp',onClick:e=>{e.stopPropagation();setPay(c);setAmt(c.price);},style:{flex:1,justifyContent:'center',padding:'9px 0',fontSize:12}},'다운로드'),
+                h('button',{className:'bs',onClick:e=>{e.stopPropagation();setDon(c);setAmt(100);},style:{flex:1,justifyContent:'center',padding:'9px 0',fontSize:12}},'도네이션')
+              ),
+              h('div',{style:{display:'flex',gap:6,paddingTop:4}},
+                h('button',{onClick:e=>handleLike(e,c,'up'),style:{flex:1,padding:'7px 0',background:likes[c.id]==='up'?'rgba(34,197,94,.12)':'rgba(255,255,255,.03)',border:'1px solid '+(likes[c.id]==='up'?'rgba(34,197,94,.3)':'var(--b)'),borderRadius:6,color:likes[c.id]==='up'?'#86EFAC':'var(--t3)',fontSize:12,fontWeight:600,cursor:'pointer',fontFamily:'Inter',transition:'all .15s'}},'👍 좋아요'),
+                h('button',{onClick:e=>handleLike(e,c,'down'),style:{flex:1,padding:'7px 0',background:likes[c.id]==='down'?'rgba(239,68,68,.1)':'rgba(255,255,255,.03)',border:'1px solid '+(likes[c.id]==='down'?'rgba(239,68,68,.3)':'var(--b)'),borderRadius:6,color:likes[c.id]==='down'?'#FCA5A5':'var(--t3)',fontSize:12,fontWeight:600,cursor:'pointer',fontFamily:'Inter',transition:'all .15s'}},'👎 별로')
               )
             ))
           )
@@ -307,7 +324,13 @@ function App(){
           h('div',null,
             h('div',{className:'lbl',style:{marginBottom:8,color:'var(--pl)'}},'Weekly · Arena'),
             h('h3',{style:{fontSize:'clamp(28px,4vw,48px)',fontWeight:700,letterSpacing:'-.04em',lineHeight:1.1,marginBottom:12}},'AI 기술을',h('br'),'맞붙여라'),
-            h('p',{style:{fontSize:14,color:'var(--t2)',lineHeight:1.65,marginBottom:24}},'매주 두 기술이 맞붙습니다. 실사용자 투표로 승자가 결정되고 TOP10 랭킹에 가산점이 반영됩니다.'),
+            h('p',{style:{fontSize:14,color:'var(--t2)',lineHeight:1.65,marginBottom:16}},'매주 두 기술이 맞붙습니다. 실사용자 투표로 승자가 결정되고 TOP10 랭킹에 가산점이 반영됩니다.'),
+            h('div',{style:{padding:'12px 14px',background:'rgba(124,58,237,.08)',border:'1px solid rgba(124,58,237,.2)',borderRadius:8,marginBottom:24,fontSize:12,color:'#C4B5FD',lineHeight:1.6}},
+              '🏆 승자 혜택',h('br'),
+              '• 상대방 도네이션 풀 90% 획득',h('br'),
+              '• 랭킹 가산점 +10점',h('br'),
+              '• 플랫폼 수수료 10% 적용'
+            ),
             h('button',{className:'bp',onClick:()=>setArena(true),style:{padding:'11px 22px',fontSize:14}},'배틀 참여하기 →')
           ),
           h('div',{style:{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:10,alignItems:'center'},className:'arena-cards'},
@@ -437,6 +460,21 @@ function App(){
           h('select',{id:'up-cat'},
             ...['PROMPT','AGENT','SKILL','MCP','HARNESS'].map(c=>h('option',{key:c},c))
           ),
+          h('div',{style:{marginBottom:4}},
+            h('div',{className:'lbl',style:{marginBottom:8}},'가격 설정'),
+            h('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:6}},
+              ...[['무료',0,'#22C55E'],['₩100',100,'var(--pl)'],['₩300',300,'var(--pl)'],['₩1,000',1000,'var(--pl)']].map(([l,p,col])=>
+                h('button',{key:p,id:'up-price-'+p,onClick:()=>{
+                  document.querySelectorAll('[id^=up-price-]').forEach(b=>{b.style.background='rgba(255,255,255,.03)';b.style.borderColor='var(--b)';b.style.color='var(--t2)';});
+                  const btn=document.getElementById('up-price-'+p);
+                  btn.style.background=p===0?'rgba(34,197,94,.12)':'rgba(124,58,237,.14)';
+                  btn.style.borderColor=p===0?'rgba(34,197,94,.3)':'rgba(124,58,237,.4)';
+                  btn.style.color=p===0?'#86EFAC':'#C4B5FD';
+                  btn.dataset.selected='true';
+                },style:{padding:'9px 4px',background:'rgba(255,255,255,.03)',border:'1px solid var(--b)',borderRadius:8,color:'var(--t2)',fontSize:12,fontWeight:600,cursor:'pointer',fontFamily:'Inter'}},l)
+              )
+            )
+          ),
           h('textarea',{id:'up-desc',placeholder:'설명 (어떤 문제를 해결하나요?)',rows:4,style:{resize:'none'}}),
           h('button',{className:'bp',onClick:async()=>{
             const title=document.getElementById('up-title').value;
@@ -476,7 +514,7 @@ function App(){
             )
           ].filter(Boolean))
         ),
-        res&&h('div',{style:{padding:'10px 14px',textAlign:'center',marginBottom:10,border:'1px solid '+(lp>rp?'rgba(124,58,237,.3)':'rgba(96,165,250,.3)'),borderRadius:8,fontSize:13,fontWeight:500,color:lp>rp?'var(--pl)':'#60A5FA'}},'현재 우세 · ',(lp>rp?bt.left:bt.right).title),
+        res&&h('div',{style:{padding:'10px 14px',textAlign:'center',marginBottom:10,border:'1px solid '+(lp>rp?'rgba(124,58,237,.3)':'rgba(96,165,250,.3)'),borderRadius:8,fontSize:13,fontWeight:500,color:lp>rp?'var(--pl)':'#60A5FA'}},'현재 우세 · ',(lp>rp?bt.left:bt.right).title,' 🏆 승리시 상대 도네 90% 획득'),
         h('div',{style:{display:'flex',gap:10}},
           h('button',{className:'bs',onClick:()=>{setArena(false);setVoted(null);setRes(false);},style:{flex:1,justifyContent:'center',padding:'11px 0'}},'닫기'),
           voted&&h('button',{className:'bp',onClick:()=>{setVoted(null);setRes(false);setAIdx((aIdx+1)%BATTLES.length);},style:{flex:1,justifyContent:'center',padding:'11px 0'}},'다음 배틀 →')
