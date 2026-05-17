@@ -277,7 +277,16 @@ function App(){
                 )
               ),
               h('div',{style:{display:'flex',gap:8}},
-                h('button',{className:'bp',onClick:e=>{e.stopPropagation();setPay(c);setAmt(c.price);},style:{flex:1,justifyContent:'center',padding:'9px 0',fontSize:12}},'다운로드'),
+                h('button',{className:'bp',onClick:e=>{
+                  e.stopPropagation();
+                  if(c.price===0||c.is_free){
+                    // 무료 — 바로 다운로드
+                    if(c.file_url){window.open(c.file_url,'_blank');}
+                    else{showT('파일이 없습니다.','error');}
+                  } else {
+                    setPay(c);setAmt(c.price);
+                  }
+                },style:{flex:1,justifyContent:'center',padding:'9px 0',fontSize:12}},c.price===0||c.is_free?'무료 다운로드':'다운로드'),
                 h('button',{className:'bs',onClick:e=>{e.stopPropagation();setDon(c);setAmt(100);},style:{flex:1,justifyContent:'center',padding:'9px 0',fontSize:12}},'도네이션')
               ),
               h('div',{style:{display:'flex',gap:6,paddingTop:4}},
@@ -391,7 +400,11 @@ function App(){
             h('div',{className:'lbl',style:{marginBottom:4}},'결제 금액'),
             h('div',{style:{fontSize:28,fontWeight:700,letterSpacing:'-.03em'}},'₩'+amt.toLocaleString())
           ),
-          h('button',{className:'bp',onClick:()=>{setPay(null);showT('✓ 다운로드가 시작됩니다!');},style:{justifyContent:'center',padding:'12px 0',fontSize:14}},'₩'+amt.toLocaleString()+' 결제하기')
+          h('button',{className:'bp',onClick:()=>{
+            setPay(null);
+            showT('✓ 결제 완료! 다운로드를 시작합니다.');
+            if(pay.file_url){setTimeout(()=>window.open(pay.file_url,'_blank'),500);}
+          },style:{justifyContent:'center',padding:'12px 0',fontSize:14}},'₩'+amt.toLocaleString()+' 결제하기')
         )
       )
     ),
@@ -465,25 +478,48 @@ function App(){
           h('div',{style:{marginBottom:4}},
             h('div',{className:'lbl',style:{marginBottom:8}},'가격 설정'),
             h('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:6}},
-              ...[['무료',0,'#22C55E'],['₩100',100,'var(--pl)'],['₩300',300,'var(--pl)'],['₩1,000',1000,'var(--pl)']].map(([l,p,col])=>
+              ...[['무료',0],['₩100',100],['₩300',300],['₩1,000',1000]].map(([l,p])=>
                 h('button',{key:p,id:'up-price-'+p,onClick:()=>{
                   document.querySelectorAll('[id^=up-price-]').forEach(b=>{b.style.background='rgba(255,255,255,.03)';b.style.borderColor='var(--b)';b.style.color='var(--t2)';});
                   const btn=document.getElementById('up-price-'+p);
                   btn.style.background=p===0?'rgba(34,197,94,.12)':'rgba(124,58,237,.14)';
                   btn.style.borderColor=p===0?'rgba(34,197,94,.3)':'rgba(124,58,237,.4)';
                   btn.style.color=p===0?'#86EFAC':'#C4B5FD';
-                  btn.dataset.selected='true';
                 },style:{padding:'9px 4px',background:'rgba(255,255,255,.03)',border:'1px solid var(--b)',borderRadius:8,color:'var(--t2)',fontSize:12,fontWeight:600,cursor:'pointer',fontFamily:'Inter'}},l)
               )
             )
+          ),
+          h('div',{style:{border:'2px dashed var(--b)',borderRadius:8,padding:'20px',textAlign:'center',cursor:'pointer',transition:'border-color .15s'},
+            onDragOver:e=>{e.preventDefault();e.currentTarget.style.borderColor='var(--pl)';},
+            onDragLeave:e=>{e.currentTarget.style.borderColor='var(--b)';},
+            onDrop:e=>{e.preventDefault();e.currentTarget.style.borderColor='var(--b)';const f=e.dataTransfer.files[0];if(f){document.getElementById('up-file-label').textContent='📎 '+f.name;document.getElementById('up-file').files=e.dataTransfer.files;}},
+            onClick:()=>document.getElementById('up-file').click()},
+            h('input',{id:'up-file',type:'file',accept:'.txt,.md,.json,.py,.js,.pdf,.zip',style:{display:'none'}}),
+            h('div',{id:'up-file-label',style:{fontSize:13,color:'var(--t3)'}},'📎 파일 첨부 (txt, md, json, py, js, pdf, zip)'),
+            h('div',{style:{fontSize:11,color:'var(--t3)',marginTop:4}},'클릭하거나 드래그하세요')
           ),
           h('textarea',{id:'up-desc',placeholder:'설명 (어떤 문제를 해결하나요?)',rows:4,style:{resize:'none'}}),
           h('button',{className:'bp',onClick:async()=>{
             const title=document.getElementById('up-title').value;
             const desc=document.getElementById('up-desc').value;
             const cat=document.getElementById('up-cat').value;
+            const fileInput=document.getElementById('up-file');
+            const file=fileInput?.files?.[0];
+            // 선택된 가격 확인
+            let price=0;
+            document.querySelectorAll('[id^=up-price-]').forEach(b=>{if(b.style.color==='rgb(134, 239, 172)'||b.style.color==='rgb(196, 181, 253)')price=parseInt(b.id.replace('up-price-',''));});
             if(!title||!desc){showT('제목과 설명을 입력해주세요.','error');return;}
-            const{error}=await db.from('assets').insert({title,description:desc,category:cat,price:100,icon:'✦',status:'ACTIVE'});
+            if(!file){showT('파일을 첨부해주세요.','error');return;}
+            // 파일 업로드
+            const fileName=Date.now()+'_'+file.name;
+            const{data:uploadData,error:uploadErr}=await db.storage.from('assets').upload(fileName,file);
+            if(uploadErr){showT('파일 업로드 실패: '+uploadErr.message,'error');return;}
+            const{data:{publicUrl}}=db.storage.from('assets').getPublicUrl(fileName);
+            // DB 저장
+            const{error}=await db.from('assets').insert({
+              title,description:desc,category:cat,price,icon:'✦',status:'ACTIVE',
+              file_url:publicUrl,file_name:file.name,is_free:price===0,
+            });
             if(error){showT(error.message,'error');}
             else{setUp(false);showT('🎉 업로드 완료!');}
           },style:{justifyContent:'center',padding:'11px 0',marginTop:4}},'업로드 실행')
