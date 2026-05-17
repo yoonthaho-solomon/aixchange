@@ -464,8 +464,8 @@ function App(){
     ),
 
     // UPLOAD MODAL
-    up&&h('div',{onClick:()=>setUp(false),style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.82)',backdropFilter:'blur(8px)',display:'flex',alignItems:'flex-end',justifyContent:'center',padding:0}},
-      h('div',{onClick:e=>e.stopPropagation(),className:'card',style:{width:'100%',maxWidth:480,background:'#0c0c0c',borderColor:'rgba(255,255,255,.1)',borderRadius:'12px 12px 0 0',maxHeight:'90vh',overflowY:'auto'}},
+    up&&h('div',{onClick:()=>setUp(false),style:{position:'fixed',inset:0,zIndex:500,background:'rgba(0,0,0,.82)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',padding:16,overflowY:'auto'}},
+      h('div',{onClick:e=>e.stopPropagation(),className:'card',style:{width:'100%',maxWidth:480,background:'#0c0c0c',borderColor:'rgba(255,255,255,.1)',maxHeight:'88vh',overflowY:'auto'}},
         h('div',{style:{padding:'20px 22px',borderBottom:'1px solid var(--b)',display:'flex',justifyContent:'space-between',alignItems:'center'}},
           h('div',{className:'lbl'},'Upload · Asset'),
           h('button',{className:'bg',onClick:()=>setUp(false),style:{fontSize:20}},'×')
@@ -505,20 +505,21 @@ function App(){
             const cat=document.getElementById('up-cat').value;
             const fileInput=document.getElementById('up-file');
             const file=fileInput?.files?.[0];
-            // 선택된 가격 확인
             let price=0;
             document.querySelectorAll('[id^=up-price-]').forEach(b=>{if(b.style.color==='rgb(134, 239, 172)'||b.style.color==='rgb(196, 181, 253)')price=parseInt(b.id.replace('up-price-',''));});
             if(!title||!desc){showT('제목과 설명을 입력해주세요.','error');return;}
-            if(!file){showT('파일을 첨부해주세요.','error');return;}
-            // 파일 업로드
-            const fileName=Date.now()+'_'+file.name;
-            const{data:uploadData,error:uploadErr}=await db.storage.from('assets').upload(fileName,file);
-            if(uploadErr){showT('파일 업로드 실패: '+uploadErr.message,'error');return;}
-            const{data:{publicUrl}}=db.storage.from('assets').getPublicUrl(fileName);
-            // DB 저장
+            let fileUrl=null, fileName=null;
+            if(file){
+              const fn=Date.now()+'_'+file.name;
+              const{error:uploadErr}=await db.storage.from('assets').upload(fn,file);
+              if(!uploadErr){
+                const{data:{publicUrl}}=db.storage.from('assets').getPublicUrl(fn);
+                fileUrl=publicUrl; fileName=file.name;
+              }
+            }
             const{error}=await db.from('assets').insert({
               title,description:desc,category:cat,price,icon:'✦',status:'ACTIVE',
-              file_url:publicUrl,file_name:file.name,is_free:price===0,
+              file_url:fileUrl,file_name:fileName,is_free:price===0,
             });
             if(error){showT(error.message,'error');}
             else{setUp(false);showT('🎉 업로드 완료!');}
