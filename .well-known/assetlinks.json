@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.aixchange.app",
+    "sha256_cert_fingerprints": ["9E:D4:11:41:9E:ED:87:E9:57:27:62:94:11:40:DC:B9:A4:F1:4A:F7:1F:67:01:10:2E:5B:C9:E1:F0:80:72:88"]
+  }
+}]
